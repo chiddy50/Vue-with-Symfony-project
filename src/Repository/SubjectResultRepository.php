@@ -70,6 +70,23 @@ class SubjectResultRepository extends ServiceEntityRepository
                 return $stmt;
             }
         }
+
+        // return $this->createQueryBuilder('sr')
+        //     ->where('sr.student = :student')
+        //     ->andWhere('sr.session = :session')
+        //     ->andWhere('sr.term = :term')
+        //     ->andWhere('sr.subject = :subject')
+        //     ->setParameters(new ArrayCollection(array(
+        //         new Parameter('student', $id),
+        //         new Parameter('session', $session),
+        //         new Parameter('term', $term),
+        //         new Parameter('subject', $subject)
+        //     )))
+        //     ->select('sr.id') or select('count(account.id)')
+        //     ->getQuery()
+        //     ->getResult();
+        
+        // to count use $count = getQuery()->getSingleScalarResult();
     }
 
     public function getStudentsExamResults($session, $student, $term)

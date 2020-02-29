@@ -9,9 +9,9 @@
                 <Sidebar/>
                 <div class="dashboard-content-one">
                     
-                    <keep-alive>
+                    <!-- <keep-alive> -->
                     <router-view></router-view>
-                    </keep-alive>
+                    <!-- </keep-alive> -->
 
                     <!-- <div class="col-md-12"> -->
                     <footer class="footer-wrap-layout1">

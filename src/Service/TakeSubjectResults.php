@@ -16,25 +16,27 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TakeSubjectResults
 {
-    public function recordSubject($results, $student_id, $session, $date, $term, EntityManagerInterface $em, SubjectResultRepository $repo)
+    public function recordSubject($results, $student_id, $session, $date, $term, EntityManagerInterface $em)
     {   
         $val = [];
         $student_entity = $em->getRepository(StudentInfo::class)->find($student_id);
         $session_entity = $em->getRepository(Session::class)->find($session);
         $term_entity = $em->getRepository(Term::class)->find($term);
-        foreach ($results as $result) {
-            $stmt = $repo->checkSubjectResultExists($session, $student_id, $result['subject'], $term);
+        $dataserializer = new DataSerializer;
 
+        foreach ($results as $result) {
+            $stmt = $em->getRepository(SubjectResult::class)->checkSubjectResultExists($result['session'], $result['student_id'], $result['subject'], $result['term']);
+                        
             $grade_entity = $em->getRepository(Grade::class)->find($result['grade']);
             $subject_entity = $em->getRepository(Subjects::class)->find($result['subject']);
             if($stmt->rowCount() === 1){
                 $single = $stmt->fetch();
+                dd($single);
                 if (count($single)) {
                     $this->update($single['id'], $session_entity, $student_entity, $grade_entity, $subject_entity, $result['score'], $date, $term_entity, $em);
-                }else{
-                    $error = true;
-                    $message = "No value";
-                    return new JsonResponse(['error' => $error, 'message' => $message]);
+                }else{                    
+                    $data = $dataserializer->serializeWithoutGroup(['error' => true, 'message' => 'No Data']);
+                    return new JsonResponse($data);
                     exit;
                 }
 

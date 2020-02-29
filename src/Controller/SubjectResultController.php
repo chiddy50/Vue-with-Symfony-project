@@ -23,7 +23,7 @@ class SubjectResultController extends AbstractController
     /**
      * @Route("/record-exam-scores", name="score_subjects", methods="POST")
      */
-    public function scoreSubjects(Request $request, SubjectResultRepository $repo){
+    public function scoreSubjects(Request $request){
         $subjects = $request->request->get('subject');
         $grades = $request->request->get('grade');
         $student_score = $request->request->get('student_score');
@@ -31,13 +31,13 @@ class SubjectResultController extends AbstractController
         $date = $request->request->get('date');
         $session = $request->request->get('session');
         $term = $request->request->get('term');
-
-        dd($subjects);
+        $dataserializer = new DataSerializer;
+        
         $results = [];
         foreach($subjects as $subject_id => $value){
             foreach ($grades as $subject_id2 => $grade) {
                 foreach ($student_score as $subject_id3 => $score) {
-                    if ($subject_id === $subject_id3 && $subject_id === $subject_id2 && $subject_id3 === $subject_id) {
+                    if ($subject_id === $subject_id3 && $subject_id === $subject_id2 && $subject_id3 === $subject_id2) {
                         array_push($results, ['subject' => $subject_id, 'term' => $term, 'grade' => $grade, 'score' => $score, 'session' => $session, 'date' => $date, 'student_id' => $student_id]);
                     }                    
                 }
@@ -48,12 +48,13 @@ class SubjectResultController extends AbstractController
         $term_entity = $em->getRepository(Term::class)->find($term);
 
         $record = new TakeSubjectResults();
-        $record->recordSubject($results, $student_id, $session, $date, $term, $em, $repo);
-        $val = $record->formatter($results, $em);
+        $record->recordSubject($results, $student_id, $session, $date, $term, $em);
+        $formatedRecord = $record->formatter($results, $em);
         
-        return new JsonResponse(['error' => false, 'results' => $val, 'session' => $session_entity->getSession(), 'term' => $term_entity->getTermCode()]);
-
-
+        $return = ['error' => false, 'results' => $formatedRecord, 'session' => $session_entity->getSession(), 'term' => $term_entity->getTermCode()];
+        $groups = ['groups' => ['subject_result:add']];
+        $data = $dataserializer->serializeData($return, $groups);
+        return new JsonResponse($data);
     }
 
     /**

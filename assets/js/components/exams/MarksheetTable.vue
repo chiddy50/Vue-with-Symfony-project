@@ -26,10 +26,43 @@ export default {
     name: 'MarksheetTable',
     props: {
         results: Array
+    },
+    methods: {
+        commentClass(grade){	
+			let answerClass = '';
+			if (grade === 'A') {
+				answerClass = 'excellent'
+			}else if (grade === 'B') {
+				answerClass = 'veryGood'
+			}else if (grade === 'C') {
+				answerClass = 'satisfactory'
+			}else if (grade === 'D') {
+				answerClass = 'fair'
+			}else if (grade === 'F') {
+				answerClass = 'failed'
+			}
+			return answerClass;
+			
+		}
     }
 }
 </script>
 
-<style>
+<style scoped>
 
+.failed{
+    color: #ff4444;
+}
+.veryGood{
+    color: #2e42f1;
+}
+.satisfactory{
+    color: #44f9ff;
+}
+.fair{
+    color: pink;
+}
+.excellent{
+    color: #35ec35;
+}
 </style>

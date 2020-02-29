@@ -54,7 +54,7 @@
                                 </table>                            
                             </div>  -->
 
-                            <MarksheetTable v-if="hideTable" :results="results"/>                                               
+                            <MarksheetTable v-if="!hideTable" :results="results"/>                                               
                         </form>
                     </div>
 
@@ -103,16 +103,16 @@
                                 </div>
                             </div>
                             <div class="row gutters-8" v-for="subject in formattedSubjects" :key="subject.id">
-                                <div class="col-lg-4 col-12 form-group text-center" >
+                                <div class="col-md-4 col-lg-4 col-12 form-group text-center" >
                                     {{ subject.subject }}
                                     <input type="hidden" :value="subject.id" :name="'subject['+[subject.id]+']'" class="form-control">
                                 </div>
-                                <div class="col-lg-4 col-12 form-group">
+                                <div class="col-md-4 col-lg-4 col-12 form-group">
                                     <select class="form-control" :name="'grade['+[subject.id]+']'">
                                         <option :value="grade.id" v-for="grade in subject.grades" :key="grade.id">{{ grade.description }}</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-4 col-12 form-group">
+                                <div class="col-md-4 col-lg-4 col-12 form-group">
                                     <input type="number" placeholder="Score.." :name="'student_score['+[subject.id]+']'" class="form-control">
                                 </div>
                                 <hr>
@@ -121,8 +121,7 @@
                         <div class="modal-footer">
                             <button type="button" class="footer-btn bg-dark-low"
                                 data-dismiss="modal">Close</button>
-                            <button :disabled="sendScoresLoad" type="submit" class="footer-btn bg-linkedin">Save
-                                Changes</button>
+                            <button :disabled="sendScoresLoad" type="submit" class="footer-btn bg-linkedin">Record Results</button>
                         </div>
                     </form>
                 </div>
@@ -225,35 +224,29 @@ export default {
             fd.append('student_id', this.student.id)
             Axios.post('/record-exam-scores', fd)
             .then(res => {
-                // this.sendScoresLoad = false
-                // this.hideTable = false;
-                // if (!res.data.error) {
-                //     this.results = res.data.results
-                //     this.current_session = res.data.session
-                //     this.current_term = res.data.term
-                // }
-                console.log(res);                
+                this.sendScoresLoad = false
+                let data = JSON.parse(res.data)
+                console.log(data);
+                if (data.error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    this.results = data.results
+                    this.current_session = data.session
+                    this.current_term = data.term
+                    this.hideTable = false;
+                }             
             })
-            .catch(err=> console.error(err))
+            .catch(err => console.error(err))
             .finally(() => this.sendScoresLoad = false )
         },
 
-        commentClass(grade){	
-			let answerClass = '';
-			if (grade === 'A') {
-				answerClass = 'excellent'
-			}else if (grade === 'B') {
-				answerClass = 'veryGood'
-			}else if (grade === 'C') {
-				answerClass = 'satisfactory'
-			}else if (grade === 'D') {
-				answerClass = 'fair'
-			}else if (grade === 'F') {
-				answerClass = 'failed'
-			}
-			return answerClass;
-			
-		}
+        
     }
 }
 </script>
@@ -275,19 +268,4 @@ export default {
     display: none;
 }
 
-.failed{
-    color: #ff4444;
-}
-.veryGood{
-    color: #2e42f1;
-}
-.satisfactory{
-    color: #44f9ff;
-}
-.fair{
-    color: pink;
-}
-.excellent{
-    color: #35ec35;
-}
 </style>

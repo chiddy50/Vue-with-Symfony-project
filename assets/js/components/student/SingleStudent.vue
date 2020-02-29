@@ -10,7 +10,6 @@
                 <li>Student Details</li>
             </ul>
         </div>
-        <!-- <Header :title="'Students'" :title2="'Student Details'"/> -->
 
         <div class="row">            
             <!-- Contains students data -->
@@ -20,12 +19,12 @@
                 <div class="row">
                     <CheckSingleAttendance :student_id="student_id"/>                    
                     <SubjectTable
-                    :studentSubject="studentSubject" v-if="studentSubject.length"
-                    :firstname="singleStudent.data.firstname" :lastname="singleStudent.data.lastname"/>                                        
+                    :studentSubject="studentSubject" 
+                    :firstname="student.firstname" :lastname="student.lastname"/>                                        
                 </div>
                 <div class="row">
                     <div v-if="showError" class="col-8-xxxl col-12 error-box">
-                        <h4 class="text-center">{{ singleStudent.data.firstname }} {{ singleStudent.data.lastname }} has no subjects</h4>
+                        <h4 class="text-center">{{ student.firstname }} {{ student.lastname }} has no subjects</h4>
                     </div>
                 </div>
                 <div class="row">
@@ -77,9 +76,7 @@ export default {
 	},
 	computed:{
         ...mapState(['singleStudent']),
-        length(){
-            return this.studentSubjectLoad.length > 0 ? true : false;
-        }
+        
 	},
 	created(){
         this.getStudentSubject(this.student.student_group.id)

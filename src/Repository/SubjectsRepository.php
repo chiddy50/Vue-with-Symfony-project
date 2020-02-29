@@ -77,7 +77,7 @@ class SubjectsRepository extends ServiceEntityRepository
     public function getStudentSubjects($id){
         $conn = $this->getEntityManager()->getConnection();
         
-        $sql = "SELECT subjects.subject FROM
+        $sql = "SELECT subjects.* FROM
         subjects JOIN subject_group ON
         subjects.id = subject_group.subject_id
         WHERE subject_group.student_group_id = :id";

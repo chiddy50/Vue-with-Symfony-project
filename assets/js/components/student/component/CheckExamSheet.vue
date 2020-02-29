@@ -95,23 +95,22 @@ export default {
             _fd.append('student_id', this.student_id)
             Axios.post('/check-exam-records', _fd)
             .then(res => {
+                self.loading = false
                 let data = JSON.parse(res.data)
-                console.log(res);
                 console.log(data);
-                this.records = data.records
-                // if (res.data.error) {
-                //     self.loading = false
-                //     Swal.fire('Error!!', res.data.message, 'error')
-                // }else{
-                //     self.loading = false
-                //     this.records = res.data.records
-                // }
-
+                if (data.error) {                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    self.records = data.records                    
+                }         
             })
-            .catch(err => {
-                this.loading = false;
-                console.error(err);                
-            })
+            .catch(err => console.error(err))
             .finally(() =>  this.loading = false)
         },
 
