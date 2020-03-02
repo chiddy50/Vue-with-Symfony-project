@@ -74,17 +74,19 @@ export default {
             dob: null
         }   
 	},
-	computed:{
-        ...mapState(['singleStudent']),
-        
-	},
+
 	created(){
         this.getStudentSubject(this.student.student_group.id)
-        this.getStudentsDates(this.student.id)
+    },
+    mounted(){
+        this.setDates()
     },
 	methods:{
         ...mapActions(['getClasses', 'fetchSections', 'getSessions', 'getMonths']),
-
+        setDates(){
+            this.dob = moment(this.student.admission_date).format('MMMM Do YYYY');     
+            this.admission_date = moment(this.student.doa).format('MMMM Do YYYY');
+        },
         getStudentSubject(payload){
             this.studentSubject = [];
             this.studentSubjectLoad = true;
@@ -110,24 +112,7 @@ export default {
             })
             .finally(() => this.studentSubjectLoad = false )
         },
-        getStudentsDates(){
-            this.dateLoading = true
-            let formData = new FormData();
-            let self = this;
-            formData.append('id', this.student.id)
-            Axios.post('/get-student-dates', formData)
-            .then(response => {
-                let data = response.data;
-                this.admission_date = moment(data.doa.date).format('MMMM Do YYYY');
-                this.dob = moment(data.dob.date).format('MMMM Do YYYY');     
-               
-            })
-            .catch(err => {
-                console.log(err)
-            })
-            .finally(() => this.dateLoading = false )
-        },
-
+    
 
 	}
 }

@@ -22,6 +22,7 @@ import SubjectAttendance from './components/attendance/SubjectAttendance.vue';
 import Exam from './components/exams/Exam.vue';
 import StudentMarkSheet from './components/exams/StudentMarkSheet.vue';
 import SingleMarksheet from './components/exams/SingleMarksheet.vue';
+import EditSingleMarksheet from './components/exams/EditSingleMarksheet.vue';
 
 import Grade from './components/academics/Grade.vue';
 import Classes from './components/academics/Classes.vue';
@@ -95,7 +96,12 @@ const router = new VueRouter({
             component: SingleMarksheet,
             name: 'SingleMarksheet',
             props: true
-        }, 
+        },
+        {
+            path: '/edit-marksheet/:id',
+            component: EditSingleMarksheet
+        },  
+        
         {
             path: '/section',
             component: Sections,

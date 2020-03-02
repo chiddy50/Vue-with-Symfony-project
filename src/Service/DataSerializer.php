@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 class DataSerializer
 {
@@ -21,7 +22,7 @@ class DataSerializer
         );
 
         $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer($classMetadataFactory)];
+        $normalizers = [new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)];
         $serializer = new Serializer($normalizers, $encoders);
         $jsonContent = $serializer->serialize($data, 'json', $group);
 

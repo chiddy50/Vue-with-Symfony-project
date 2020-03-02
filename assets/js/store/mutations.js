@@ -121,7 +121,7 @@ export default {
         }        
     },
     getExams(state){
-        if (!state.exams.length) {
+        // if (!state.exams.length) {
             Axios.post('/examinations')
             .then(res => {         
                 console.log(res);
@@ -131,7 +131,7 @@ export default {
             .catch(err => {
                 console.error(err);
             });            
-        }        
+        // }        
     },
     getMonths(state){
         if (!state.months.length) {

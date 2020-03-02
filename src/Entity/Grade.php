@@ -15,6 +15,7 @@ class Grade
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("subject_result:add")
      */
     public $id;
 

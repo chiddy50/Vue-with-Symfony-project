@@ -19,32 +19,42 @@ class ExamRepository extends ServiceEntityRepository
         parent::__construct($registry, Exam::class);
     }
 
-    // /**
-    //  * @return Exam[] Returns an array of Exam objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function liveSearch($search)
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $entityManager = $this->getEntityManager();
 
-    /*
-    public function findOneBySomeField($value): ?Exam
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $entityManager->createQuery(
+            'SELECT e
+            FROM App\Entity\Exam e
+            WHERE e.exam_name LIKE :search'            
+        )->setParameter('search', '%'.$search.'%');
+        
+        // returns an array of Exam objects
+        return $query->getResult();
     }
-    */
+
+    public function examSearch($subject, $session, $term, $class, $section, $student_group)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT e
+            FROM App\Entity\Exam e
+            WHERE e.subject = :subject OR           
+            e.session = :session OR           
+            e.term = :term OR
+            e.classes = :classes OR
+            e.section = :section OR
+            e.student_group = :student_group'           
+        )->setParameters(array(
+            'subject' => $subject,
+            'session' => $session,
+            'section' => $section,
+            'term' => $term,
+            'classes' => $class,
+            'student_group' => $student_group
+        ));
+        // returns an array of Exam objects
+        return $query->getResult();
+    }
 }

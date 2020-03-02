@@ -295,18 +295,6 @@ class StudentController extends AbstractController
         return new JsonResponse(['error' => true, 'message' => 'Deleted', ]);
     }
 
-    /**
-     * @Route("/get-student-dates", name="get_student_dates", methods="POST")
-     */
-    public function getDates(Request $request)
-    {
-        $student_id = $request->request->get('id');
-        $em = $this->getDoctrine()->getManager();
-        $student = $em->getRepository(StudentInfo::class)->find($student_id);   
-        $admission_date = $student->getAdmissionDate();
-        $dob = $student->getDob();
-        return new JsonResponse(['error' => false, 'doa' => $admission_date, 'dob' => $dob, 'student' => $student]);
-    }
 
     //---------------------------- student group routes-----------------------------///
 

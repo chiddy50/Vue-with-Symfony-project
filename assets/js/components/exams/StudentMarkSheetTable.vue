@@ -28,7 +28,7 @@
                                     <tr class="text-center">
                                         <th>Roll No</th>
                                         <th>Name</th>
-                                        <th>Status</th>
+                                        <th colspan='2'></th>
                                     </tr>
                                 </thead>
                                 <tbody>                            
@@ -36,8 +36,13 @@
                                         <td>{{ student.roll_no }}</td>
                                         <td>{{ student.firstname }} {{ student.lastname }}</td>
                                         <td>
-                                            <router-link  :to="{ name: 'SingleMarksheet', params: { student } }" class="btn-own">View MarkSheet</router-link>
-                                        </td>                                      
+                                            <router-link  :to="{ name: 'SingleMarksheet', params: { student } }" class="btn-own">Create MarkSheet</router-link>
+                                        </td>
+                                        <td>
+                                            <router-link :to="`/edit-marksheet/${student.id}`" class="btn btn-lg shadow-dark-peel bg-success text-center rounded-bottom text-light">
+                                                Edit MarkSheet <i class="fas fa-pencil-alt text-light"></i>
+                                            </router-link> 
+                                        </td>                                     
                                     </tr>
                                 </tbody>
                             </table>
@@ -64,11 +69,13 @@ export default {
 <style scoped>
 .btn-own{
     padding: 6px;
-    background: #ff4532;
     border: none;
+    background: #ff4532;
     outline: none;
     color: #fff;
     font-size: 13px;
     cursor: pointer;
 }
+
+
 </style>

@@ -55,7 +55,7 @@
                                 <label>Term</label>
                                 <select name="term" class="form-control select2 rounded-0">
                                     <option value="">Please Select Term</option>
-                                    <option v-for="term in terms" :key="term.id" :value="term.id">{{ term.termCode }}</option>
+                                    <option v-for="term in terms" :key="term.id" :value="term.id">{{ term.term_code }}</option>
                                 </select>
                             </div>
                             <div class="col-12-xxxl col-lg-6 col-12 form-group">
@@ -81,22 +81,54 @@
                 <div class="card-body">
                     <div class="heading-layout1">
                         <div class="item-title">
-                            <h3>All Exam Schedule</h3>
+                            <h3>Search for Schedule</h3>
                         </div>
                     </div>
-                    <form class="mg-b-20">
+                    <form @submit.prevent="examSearch($event)" class="mg-b-20">
+                        <div class="row gutters-8">
+                            <div class="col-lg-3 col-12 form-group">
+                                <input type="text" placeholder="Exam name..." v-model="search" @keyup="liveSearchExam" class="form-control">
+                            </div>
+                            <div class="col-lg-3 col-12 form-group">
+                                <select name="subject" class="form-control select2 rounded-0">
+                                    <option value="">Search By Subject</option>
+                                    <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.subject }}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-12 form-group">
+                                <select name="session" class="form-control select2 rounded-0">
+                                    <option value="">Search By Session</option>
+                                    <option v-for="session in sessions" :key="session.id" :value="session.id">{{ session.session }}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-12 form-group">
+                                <select name="term" class="form-control select2 rounded-0">
+                                    <option value="">Search By Term</option>
+                                    <option v-for="term in terms" :key="term.id" :value="term.id">{{ term.term_code }}</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="row gutters-8">
                             <div class="col-lg-4 col-12 form-group">
-                                <input type="text" placeholder="Search by Exam ..." class="form-control">
+                                <select name="class" class="form-control select2 rounded-0">
+                                    <option value="">Search By Class</option>
+                                    <option v-for="cl in classes" :key="cl.id" :value="cl.id">{{ cl.class_name }}</option>
+                                </select>
                             </div>
                             <div class="col-lg-3 col-12 form-group">
-                                <input type="text" placeholder="Search by Subject ..." class="form-control">
+                                <select name="section" class="form-control select2 rounded-0">
+                                    <option value="">Search By Section</option>
+                                    <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.section_name }}</option>
+                                </select>
                             </div>
                             <div class="col-lg-3 col-12 form-group">
-                                <input type="text" placeholder="Search by Date ..." class="form-control">
+                                <select name="group" class="form-control select2 rounded-0">
+                                    <option value="">Search By Group</option>
+                                    <option v-for="group in student_group" :key="group.id" :value="group.id">{{ group.group_name }}</option>
+                                </select>
                             </div>
                             <div class="col-lg-2 col-12 form-group">
-                                <button type="submit"
+                                <button type="submit" :disbaled="$store.state.examLoading"
                                     class="fw-btn-fill btn-gradient-yellow">SEARCH</button>
                             </div>
                         </div>
@@ -105,51 +137,44 @@
                         <table class="table display data-table table-striped table-bordereds text-nowrap">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input checkAll">
-                                            <label class="form-check-label">Exam Name</label>
-                                        </div>
-                                    </th>
+                                    <th>Exam Name</th>
                                     <th>Subject</th>
                                     <th>Class</th>
                                     <th>Section</th>
                                     <th>Time</th>
                                     <th>Date</th>
-                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input">
-                                            <label class="form-check-label">Class Test</label>
-                                        </div>
-                                    </td>
-                                    <td>Mathematics</td>
-                                    <td>4</td>
-                                    <td>A</td>
-                                    <td>10.00 am - 11.00 am</td>
-                                    <td>20/06/2019</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <span class="flaticon-more-button-of-three-dots"></span>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#"><i
-                                                        class="fas fa-times text-orange-red"></i>Close</a>
-                                                <a class="dropdown-item" href="#"><i
-                                                        class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
-                                                <a class="dropdown-item" href="#"><i
-                                                        class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
-                                            </div>
-                                        </div>
-                                    </td>
+                            <tbody v-if="!$store.state.examLoading">
+                                <tr v-for="(exam, index) in exams" :key="index">
+                                    <td>{{ exam.exam_name }}</td>
+                                    <td>{{ exam.subject.subject }}</td>
+                                    <td>{{ exam.classes.class_name }}</td>
+                                    <td>{{ exam.section.section_name }}</td>
+                                    <td>{{ exam.time }}</td>
+                                    <td v-text="setDate(exam.date)"></td>
                                 </tr>
                             </tbody>
+                            <tr v-else>
+                                <td>
+                                    <i class="fas fa-spinner fa-spin text-warning spinner-md"></i>
+                                </td>
+                                <td>
+                                    <i class="fas fa-spinner fa-spin text-warning spinner-md"></i>
+                                </td>
+                                <td>
+                                    <i class="fas fa-spinner fa-spin text-warning spinner-md"></i>
+                                </td>
+                                <td>
+                                    <i class="fas fa-spinner fa-spin text-warning spinner-md"></i>
+                                </td>
+                                <td>
+                                    <i class="fas fa-spinner fa-spin text-warning spinner-md"></i>
+                                </td>
+                                <td>
+                                    <i class="fas fa-spinner fa-spin text-warning spinner-md"></i>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -163,12 +188,15 @@
 import Header from '../inc/Header.vue';
 import { mapActions, mapState } from 'vuex';
 import Axios from 'axios';
+import moment from 'moment';
 
 
 export default {
     data(){
         return{
-            exam: ''
+            exam: '',
+            search: null,
+            date: null
         }
     },
     components:{
@@ -191,19 +219,72 @@ export default {
         addExam(e){
             let fd = new FormData(e.target)
             Axios.post('/exam/new', fd)
-            .then(res => {
-                console.log(res);      
-                // this.exam = res.data.exam          
-                // this.exams.push(res.data.exam)
+            .then(response => {
+                let data = JSON.parse(response.data)
+                console.log(data);
+                if(data.error){
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    this.$store.state.exams.push(data.exam)
+                }   
             })
             .catch(err => {
                 console.error(err);
             })
+        },
+        liveSearchExam(){
+            this.$store.state.examLoading = true
+
+            let formData = new FormData()
+            formData.append('name', this.search)
+            Axios.post("/live-exam-search", formData)
+            .then(response => {
+                this.$store.state.examLoading = false
+                let data = JSON.parse(response.data)                
+                this.$store.state.exams = data.exams;                             
+            })
+            .catch(err => console.error(err) )
+            .finally(() => this.$store.state.examLoading = false )
+        },
+        examSearch(e){
+            this.$store.state.examLoading = true
+
+            let formData = new FormData(e.target)
+            Axios.post("/exam-search", formData)
+            .then(response => {
+                this.$store.state.examLoading = false
+                let data = JSON.parse(response.data)
+                console.log(data);
+                if(data.error){
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    this.$store.state.exams = data.exams;
+                }                                             
+            })
+            .catch(err => console.error(err) )
+            .finally(() => this.$store.state.examLoading = false )
+        },
+        setDate(date){
+            return moment(date).format('MMMM Do YYYY');
         }
     }
 }
 </script>
 
-<style>
-
+<style scoped>
+i.spinner-md{
+    font-size: 40px;
+}
 </style>

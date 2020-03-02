@@ -16,9 +16,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TakeSubjectResults
 {
-    public function recordSubject($results, $student_id, $session, $date, $term, EntityManagerInterface $em)
+    public function createRecords($results, $student_id, $session, $date, $term, EntityManagerInterface $em)
     {   
-        $val = [];
         $student_entity = $em->getRepository(StudentInfo::class)->find($student_id);
         $session_entity = $em->getRepository(Session::class)->find($session);
         $term_entity = $em->getRepository(Term::class)->find($term);
@@ -43,6 +42,26 @@ class TakeSubjectResults
             }else{
                 $this->insert($session_entity, $student_entity, $grade_entity, $subject_entity, $result['score'], $date, $term_entity, $em);
             }
+        }
+    }
+
+    public function updateRecords($results, $student_id, $session, $date, $term, EntityManagerInterface $em)
+    {
+        $student_entity = $em->getRepository(StudentInfo::class)->find($student_id);
+        $session_entity = $em->getRepository(Session::class)->find($session);
+        $term_entity = $em->getRepository(Term::class)->find($term);
+        $dataserializer = new DataSerializer;
+
+        foreach ($results as $result) {
+            // $stmt = $em->getRepository(SubjectResult::class)->checkSubjectResultExists($result['session'], $result['student_id'], $result['subject'], $result['term']);
+            $subRes = $em->getRepository(SubjectResult::class)->findOneBy(['session' => $session, 'student' => $result['student_id'], 'subject' => $result['subject'], 'term' => $term]);
+            $grade_entity = $em->getRepository(Grade::class)->find($result['grade']);
+            $subject_entity = $em->getRepository(Subjects::class)->find($result['subject']);
+            
+            $id = $subRes->getId();
+            // dd($id);
+            $this->update($id, $session_entity, $student_entity, $grade_entity, $subject_entity, $result['score'], $date, $term_entity, $em);
+
         }
     }
 

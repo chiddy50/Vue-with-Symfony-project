@@ -70,19 +70,19 @@
                             </tbody>
                             <tr v-else class="text-center">
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-danger"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-danger spinner-md"></i>
                                 </td>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-danger"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-danger spinner-md"></i>
                                 </td>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-danger"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-danger spinner-md"></i>
                                 </td>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-danger"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-danger spinner-md"></i>
                                 </td>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-danger"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-danger spinner-md"></i>
                                 </td>
                                 
                             </tr>                        
@@ -182,6 +182,8 @@ export default {
             .then(response => {
                 this.$store.state.studentsLoading = false
                 let data = JSON.parse(response.data)
+                console.log(data);
+                
                 if (data.error) {
                     Swal.fire('Error!', data.message, 'error')                    
                 }else{            
@@ -200,11 +202,9 @@ export default {
 </script>
 
 <style scoped>
-i#spinner-md{
-    font-size: 90px;
-}
 
-i#spinner-md{
+
+i.spinner-md{
     font-size: 30px;
 }
 i.spinner-sm{

@@ -10,13 +10,13 @@
                             <div class="col-lg-5 col-4 form-group">
                                 <select v-model="form.class_id" class="form-control">
                                     <option aria-placeholder="Choose Class" selected disabled>Choose Class</option>
-                                    <option :value="myclass.id" v-for="myclass in classes" :key="myclass.id">{{ myclass.class_name }}</option>
+                                    <option :value="myclass.id" v-for="myclass in classes" :key="myclass.id" class="text-uppercase">{{ myclass.class_name }}</option>
                                 </select>
                             </div>
                             <div class="col-lg-5 col-4 form-group">
                                 <select v-model="form.section_id" class="form-control">
                                     <option aria-placeholder="Choose Section" selected disabled>Choose Section</option>
-                                    <option name="section_id" :value="section.id" v-for="section in sections" :key="section.id">{{ section.section_name }}</option>
+                                    <option name="section_id" :value="section.id" v-for="section in sections" :key="section.id" class="text-uppercase">{{ section.section_name }}</option>
                                 </select>
                             </div>                            
                             <div class="col-lg-2 col-2 form-group">
@@ -30,7 +30,7 @@
 
         <div class="col-lg-10 offset-1 col-sm-12" v-if="watchClassAndSectionLoading || searchStudentLoading">
             <div class="box">
-                <h3 class="loading text-muted">Please wait....</h3>
+                <h3 class="loading text-primary">Please wait....</h3>
             </div>
         </div>
 
@@ -67,9 +67,9 @@ export default{
         this.getClasses()
     },
     computed:{
-        ...mapState(['classes', 'sections', 'classLoading', 'sectionLoading']),
+        ...mapState(['classes', 'sections']),
         watchClassAndSectionLoading(){
-            return this.classLoading === true || this.sectionLoading === true ? true : false;
+            return this.$store.state.classLoading === true || this.$store.state.sectionLoading === true ? true : false;
         }
     },
     methods:{
@@ -84,13 +84,23 @@ export default{
             .then(response => {
                 this.searchStudentLoading = false                
                 let data = JSON.parse(response.data);
-                this.students = data.students
-                this.className = data.class_name
-                this.sectionName = data.section_name
+                console.log(data);
+                
+                if (data.error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    this.students = data.students
+                    this.className = data.class_name
+                    this.sectionName = data.section_name
+                }
             })
-            .catch(err => {                                
-                console.error(err);                
-            })
+            .catch(err => console.error(err))
             .finally(() => this.searchStudentLoading = false)
         },
     }

@@ -57,7 +57,7 @@ class Exam
 
     /**
      * @ORM\Column(type="date", nullable=true)
-     * @Groups("exam:remove")
+     * @Groups("exam:add")
      */
     private $date;
 

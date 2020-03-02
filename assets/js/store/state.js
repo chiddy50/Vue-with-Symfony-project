@@ -27,6 +27,7 @@ export default {
     studentSubjectLoad: false,
     gradesLoading: false,
     termsLoading: false,
+    examLoading: false,
     parentCount: '',
     studentCount: '',
     maleCount: '',

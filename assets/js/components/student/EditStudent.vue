@@ -35,8 +35,7 @@
                             </div>
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
                                 <label>Date Of Birth *</label>
-                                <datepicker v-if="!dateLoading" :format="formatter" :bootstrap-styling="true" :value="form.dob" v-model="form.dob" name="dob"></datepicker>
-                                <input v-else type="text" class="form-control rounded-0" disabled placeholder="Please wait, Loading date...">
+                                <datepicker  :format="formatter" :bootstrap-styling="true" :value="form.dob" v-model="form.dob" name="dob"></datepicker>
                             </div>
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
                                 <label>Roll</label>
@@ -79,8 +78,7 @@
                             </div>
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
                                 <label>Admission Date*</label>
-                                <datepicker v-if="!dateLoading" :format="formatter" :bootstrap-styling="true" :value="form.admission_date" v-model="form.admission_date" name="doa"></datepicker>
-                                <input v-else type="text" class="form-control rounded-0" disabled placeholder="Please wait, Loading date...">
+                                <datepicker  :format="formatter" :bootstrap-styling="true" :value="form.admission_date" v-model="form.admission_date" name="doa"></datepicker>
                             </div>                            
                             
                             <div class="col-12 form-group mg-t-8">
@@ -134,27 +132,11 @@ export default {
         ...mapState(['sections', 'classes', 'parents', 'student_group', 'genders'])
     },
     beforeMount(){
-        this.getStudentsDates()
         this.fillForm()
     },
     methods:{
         ...mapActions(['getParents', 'getGender', 'getClasses', 'fetchSections', 'getGroups']),
-        getStudentsDates(){
-            this.dateLoading = true
-            let formData = new FormData();
-            let self = this;
-            formData.append('id', this.student.id)
-            Axios.post('/get-student-dates', formData)
-            .then(response => {
-                let data = response.data;
-                this.form.admission_date = data.doa.date;
-                this.form.dob = data.dob.date;        
-            })
-            .catch(err => {
-                console.log(err)
-            })
-            .finally(() => this.dateLoading = false )
-        },
+       
         editStudent(){
             this.editLoading = true
             let formData = new FormData()
@@ -186,6 +168,8 @@ export default {
             this.form.class_name = this.student.classes.id
             this.form.student_group = this.student.student_group.id
             this.form.section = this.student.section.id
+            this.form.admission_date = this.student.admission_date;
+            this.form.dob = this.student.dob;
         },
         formatter(date) {
             return moment(date).format('MMMM-Do-YYYY');

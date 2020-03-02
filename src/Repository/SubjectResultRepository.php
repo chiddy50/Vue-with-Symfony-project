@@ -89,16 +89,17 @@ class SubjectResultRepository extends ServiceEntityRepository
         // to count use $count = getQuery()->getSingleScalarResult();
     }
 
-    public function getStudentsExamResults($session, $student, $term)
-    {
-        return $this->createQueryBuilder('s')
-            ->where('s.student = :student')
-            ->andWhere('s.session = :session')
-            ->andWhere('s.term = :term')
+ 
+
+    public function getSingleRecords($id, $session, $term){
+        return $this->createQueryBuilder('sr')
+            ->where('sr.student = :student')
+            ->andWhere('sr.session = :session')
+            ->andWhere('sr.term = :term')
             ->setParameters(new ArrayCollection(array(
-                new Parameter('student', $student),
-                new Parameter('term', $term),
-                new Parameter('session', $session)
+                new Parameter('student', $id),
+                new Parameter('session', $session),
+                new Parameter('term', $term)
             )))
             ->getQuery()
             ->getResult();
