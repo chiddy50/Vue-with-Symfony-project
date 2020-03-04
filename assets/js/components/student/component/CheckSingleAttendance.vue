@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="heading-layout1">
                     <div class="item-title">
-                        <h3>Check Students School Attendance</h3>
+                        <h3>Check Single Day School Attendance</h3>
                     </div>
                     
                 </div>
@@ -82,19 +82,26 @@ export default {
     methods:{
         ...mapActions(['getMonths', 'getSessions']),
         getClassAttendanceRecord(e){
-            this.singelAttendanceLoading = true
-            $('.present-box').hide()
-            $('.absent-box').hide()
-            let fd = new FormData(e.target)
-            fd.append('id', this.student_id)
+            this.singelAttendanceLoading = true;
+            $('.present-box').hide();
+            $('.absent-box').hide();
+            let fd = new FormData(e.target);
+            fd.append('id', this.student_id);
 
-            Axios.post('/student-single/attendance', fd)
+            Axios.post('/student/single-attendance', fd)
             .then(res => {
-                this.singelAttendanceLoading = false
-                if(res.data.error){
-                    Swal.fire('Error!', res.data.message, 'success')
+                this.singelAttendanceLoading = false;
+                let data = JSON.parse(res.data);                
+                if(data.error){
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }else{
-                    if (res.data.attendance) {
+                    if (data.attendance) {
                         $('.present').text('Student was present');              
                         $('.present-box').slideDown(500);
                     }else{
@@ -103,11 +110,8 @@ export default {
                     }
                 }
             })
-            .catch(err => {
-                this.singelAttendanceLoading = false
-                console.error(err);                
-            })
-
+            .catch(err => console.error(err) )
+            .finally(() => this.singelAttendanceLoading = false );
         }
     },
     filters:{

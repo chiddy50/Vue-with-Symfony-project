@@ -56,8 +56,8 @@ export default {
     getSingleStudent: function(context, payload){
         context.commit('getSingleStudent', payload);
     },
-    searchStudent: function(context){
-        context.commit('searchStudent');
+    searchStudent: function(context, payload){
+        context.commit('searchStudent', payload);
     },
     fetchGroupSubject: function(context){
         context.commit('fetchGroupSubject');

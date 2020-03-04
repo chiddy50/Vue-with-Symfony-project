@@ -9,7 +9,7 @@ use App\Entity\StudentGroup;
 use App\Entity\Gender;
 use DateTimeImmutable;
 use App\Entity\StudentInfo;
-use App\Repository\StudentGroupRepository;
+use App\Entity\Subjects;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -296,113 +296,6 @@ class StudentController extends AbstractController
     }
 
 
-    //---------------------------- student group routes-----------------------------///
-
-    /**
-     * @Route("/new-student-group", name="new_student_group", methods="POST")
-     */
-    public function newStudentGroup(Request $request)
-    {
-        $group_name = $request->request->get('group_name');
-        $dataserializer = new DataSerializer;
-
-        if(empty($group_name)){
-            $return = ['error' => true, 'message' => 'Please provide a group name'];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit;
-        }
-
-        $student_group = new StudentGroup;
-        $student_group->setGroupName($group_name);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($student_group);
-        $em->flush();
-        
-        $return = ['error' => false, 'student_group' => $student_group];
-        $groups = ['groups' => ['student_group:add']];
-        $data = $dataserializer->serializeData($return, $groups);
-        return new JsonResponse($data);
-    }
-
-    /**
-     * @Route("/student-groups", name="all_group", methods="POST")
-     */
-    public function getGroups()
-    {
-        $student_groups = $this->getDoctrine()->getRepository(StudentGroup::class)->findAll();
-        $dataserializer = new DataSerializer;
-
-        if (!$student_groups) {            
-            $return = ['error' => true, 'message' => 'No group found'];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit;
-        }
-
-        $return = ['error' => false, 'student_groups' => $student_groups];
-        $groups = ['groups' => ['student_group:add']];
-        $data = $dataserializer->serializeData($return, $groups);
-        return new JsonResponse($data);
-    }
-
-    /**
-     * @Route("/edit-student-group", name="edit_student_group", methods="POST")
-     */
-    public function editStudentGroup(Request $request, StudentGroupRepository $repo)
-    {   
-        $id = $request->request->get('id');
-        $group_name = $request->request->get('group_name');
-        $dataserializer = new DataSerializer;
-
-        if (!$group_name) {            
-            $return = ['error' => true, 'message' => 'Please provide a group name'];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit;
-        }
-
-        $group = new StudentGroup();
-        $group = $this->getDoctrine()->getRepository(StudentGroup::class)->find($id);        
-        $group->setGroupName($group_name);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->flush();
-        $groups = $this->getDoctrine()->getRepository(StudentGroup::class)->findAll();
-
-        $return = ['error' => false, 'student_groups' => $groups];
-        $groups = ['groups' => ['student_group:add']];
-        $data = $dataserializer->serializeData($return, $groups);
-        return new JsonResponse($data);
-    }
-
-    /**
-     * @Route("/delete-student-group", name="delete_student_group", methods="POST")
-     */
-    public function deleteStudentGroup(Request $request){
-        
-        $group_id = $request->request->get('id');
-        $group = $this->getDoctrine()->getRepository(StudentGroup::class)->find($group_id);
-        $dataserializer = new DataSerializer;
-
-        if (!$group) {
-            $return = ['error' => true, 'message' => "This student group does not exist"];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit;
-        }
-        // $repo->deleteClass($group_id);
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($group);
-        $em->flush();
-
-        $return = ['error' => false, 'stduent_group' => $group];
-        $data = $dataserializer->serializeWithoutGroup($return);
-        return new JsonResponse($data);
-    }
-
-    //----------------student group end----------------------//
-
     /**
      * @Route("/countstudents", name="student_count", methods="POST")
      */
@@ -414,25 +307,41 @@ class StudentController extends AbstractController
     /**
      * @Route("/searchstudent", name="student_search", methods="POST")
      */
-    public function searchStudent(StudentInfoRepository $studentRepo, Request $request)
+    public function searchStudent(Request $request)
     {
         $class_id = $request->request->get('class_id');
         $section_id = $request->request->get('section_id');
-        $students = $this->getDoctrine()->getRepository(StudentInfo::class)->findBy(['section' => $section_id, "classes" => $class_id]);
+        $student_group = $request->request->get('student_group');
+        
         $dataserializer = new DataSerializer;
 
+        if(empty($class_id) or empty($section_id)){
+            $return = ['error' => true, 'message' => "Provide a class and section"];
+            $data = $dataserializer->serializeWithoutGroup($return);
+            return new JsonResponse($data);
+            exit; 
+        }
+
+        $students = $this->getDoctrine()->getRepository(StudentInfo::class)->findBy(['section' => $section_id, "classes" => $class_id]);
+        
         if (!$students) {
             $return = ['error' => true, 'message' => "No student found"];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
             exit;         
         }
+        $subjects = '';
+        //Get subjects 
+        if(!empty($student_group)){
+            $subjects = $this->getDoctrine()->getRepository(Subjects::class)->getStudentSubjects($student_group);
+        }
+
         $classes = $this->getDoctrine()->getRepository(Classes::class)->find($class_id);
         $sections = $this->getDoctrine()->getRepository(Section::class)->find($section_id);
         $class_name = $classes->getClassName();
         $section_name = $sections->getSectionName();
 
-        $return = ['error' => false, 'students' => $students, 'class_name' => $class_name, 'section_name' => $section_name];
+        $return = ['error' => false, 'students' => $students, 'class_name' => $class_name, 'section_name' => $section_name, 'subjects' => $subjects];
         $groups = ['groups' => ['student:add']];
         $data = $dataserializer->serializeData($return, $groups);
         return new JsonResponse($data);

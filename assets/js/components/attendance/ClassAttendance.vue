@@ -1,70 +1,71 @@
 <template>
     <div class="dashboard-content-one">
-        <!-- Breadcubs Area Start Here -->
-            <!-- <Header :title="'Student Attendence'" :title2="'Attendence'"/> -->
-            <div class="breadcrumbs-area">
-                <h3>Attendance</h3>
-                <ul>
-                    <li>
-                        <router-link to="/" as="a">Home</router-link>
-                    </li>
-                    <li>Class Attendance</li>
-                </ul>
-            </div>
-        <!-- Breadcubs Area End Here -->
+        <div class="breadcrumbs-area">
+            <h3>Attendance</h3>
+            <ul>
+                <li>
+                    <router-link to="/" as="a">Home</router-link>
+                </li>
+                <li>Class Attendance</li>
+            </ul>
+        </div>
         
         <div class="row">
-            <!-- Student Attendence Search Area Start Here -->
-            <div class="col-sm-12 col-md-12 col-lg-6">
-                <div class="card">
+            <div class="col-sm-12">              
+                <div class="card height-auto">
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
                                 <h3>Choose Class & Section</h3>
-                            </div>                            
+                            </div>
                         </div>
-           
-                        <form class="new-added-form" @submit.prevent="searchStudent" v-if="attandanceChecker">
+                        <i v-if="classLoading" class="fas fa-spinner fa-spin text-primary spinner"></i>
+                        
+                        <form class="new-added-form" @submit.prevent="searchStudent($event)" v-if="attandanceChecker">
                             <div class="row">
-                                <div class="col-sm-12 col-xl-12 col-lg-12 col-12 form-group" id="class_box">
+                                <div class="col-xl-6 col-lg-6 col-12 form-group">
                                     <label>Select Class</label>
-                                    <select v-if="!classLoading" class="bounceIn form-control" v-model="form.class_id">
+                                    <select v-if="!classLoading" name="class_id" class="bounceIn form-control" v-model="form.class_id">
                                         <option value="">Select Class</option>
                                         <option :key="one_class.id" v-for="one_class in classes" :value="one_class.id">
                                             {{ one_class.class_name }}
                                         </option>                                        
                                     </select>
                                 </div>
-                                <div class="col-sm-12 col-xl-12 col-lg-12 col-12 form-group" id="section_box">
+                                <div class="col-xl-6 col-lg-6 col-12 form-group">
                                     <label>Select Section</label>
-                                    <select v-if="!classLoading" class="bounceIn form-control" v-model="form.section_id">
+                                    <select v-if="!classLoading" name="section_id" class="bounceIn form-control" v-model="form.section_id">
                                         <option value="">Select Section</option>
                                         <option :key="section.id" v-for="section in sections" :value="section.id">
                                             {{ section.section_name }}
                                         </option>
                                     </select>
                                 </div>
-                               
+
+                                
                                 <div class="col-12 form-group mg-t-8">
-                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Retrieve</button>
+                                    <button type="submit" :disabled="$store.state.searchLoading" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark rounded-0">
+                                        Retrieve
+                                    </button>                                    
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-12 col-lg-6" id="session_month">
+            <div class="col-sm-12 col-md-12 col-lg-12" id="session_month">
                 <div class="card">
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
-                                <h3>Choose Month & Session</h3>
+                                <h3>Choose Month, Session & Date</h3>
                             </div>                            
                         </div>
                         <form class="new-added-form">
                             <div class="row">
-                                <div class="col-sm-12 col-xl-12 col-lg-12 col-12 form-group">
+                                <div class="col-sm-12 col-xl-4 col-lg-4 col-12 form-group">
                                     <label>Select Month</label>
                                     <select class="bounceIn form-control" v-model="form.month" id="month_box">
                                         <option disables selected>Select Month</option>
@@ -73,7 +74,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-sm-12 col-xl-12 col-lg-12 col-12 form-group" id="session_div">
+                                <div class="col-sm-12 col-xl-4 col-lg-4 col-12 form-group" id="session_div">
                                     <label>Select Session</label>
                                     <select class="bounceIn form-control" v-model="form.session" id="session_box">
                                         <option disables selected>Select Session</option>
@@ -82,10 +83,9 @@
                                         </option>                                        
                                     </select>
                                 </div>
-                                <div class="col-sm-12 col-xl-12 col-lg-12 col-12 form-group" id="date_div">
+                                <div class="col-sm-12 col-xl-4 col-lg-4 col-12 form-group" id="date_div">
                                     <label>Select Date</label>
-                                    <!-- <datepicker :bootstrap-styling="true" id="my_date" v-model="form.my_date" name="dob"></datepicker> -->
-                                    <input type="date" v-model="form.my_date" class="form-control" id="my_date">
+                                    <input type="date" v-model="form.date" class="form-control" id="date">
                                 </div>
                             </div>
                         </form>
@@ -96,10 +96,10 @@
             <div class="col-12" id="attendance_table">
                 <div class="card">
                     <div class="card-body">
-                        <form @submit="record($event)">
+                        <form @submit.prevent="recordAll($event)">
                             <div class="heading-layout1">
                                 <div class="item-title">
-                                    <h3>Attendence For {{ class_name|upper }}: {{ section_name|upper }}</h3>
+                                    <h3 class="text-uppercase">Attendence For {{ class_name }}: {{ section_name }}</h3>
                                 </div>                                                  
                             </div>                        
                             <div class="table-responsive">
@@ -112,7 +112,7 @@
                                             <th>Record</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody v-if="!$store.state.searchLoading">
                                         <tr v-for="student in students" :key="student.id">
                                             <td class="text-left">{{ student.roll_no }}</td>
                                             <td>{{ student.firstname }} {{ student.lastname }}</td>
@@ -123,7 +123,7 @@
                                                 <input type="radio" class="present_field" :name="'attendance['+[student.id]+']'" value="Absent">
                                             </td>
                                             <td class="button_class">
-                                                <button v-if="!recordLoading" type="button" @click.prevent="sendAttendance($event,student.id)" class="btn single_attendance btn-lg text-light rounded-circle bg-orange-peel">
+                                                <button v-if="!recordLoading" type="button" @click.prevent="recordOne($event,student.id)" class="btn single_attendance btn-lg text-light rounded-circle bg-orange-peel">
                                                     <i class="fas fa-check text-light"></i>
                                                 </button>
                                                 
@@ -131,6 +131,24 @@
                                             </td>
                                         </tr>
                                     </tbody>
+                                    <tr v-else>
+                                        <td>
+                                            <i class="fas fa-spinner fa-spin text-primary spinner"></i>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-spinner fa-spin text-primary spinner"></i>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-spinner fa-spin text-primary spinner"></i>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-spinner fa-spin text-primary spinner"></i>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-spinner fa-spin text-primary spinner"></i>
+                                        </td>
+                                        
+                                    </tr> 
                                 </table>                            
                             </div>
                             <div class="col-12 form-group mg-t-8">
@@ -151,10 +169,11 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 // import moment from 'moment';
 import Datepicker from 'vuejs-datepicker';
 import Header from '../inc/Header.vue';
+import Swal from 'sweetalert2'
 
 
 export default {
-    name: 'StudentAttendance',
+    name: 'ClassAttendance',
     components:{
         Datepicker,
         Header
@@ -169,7 +188,7 @@ export default {
                 section_id: '',
                 month: '',
                 session: '',
-                my_date: '',
+                date: '',
                 student_id: '',
             },
             recordLoading: false,    
@@ -187,63 +206,43 @@ export default {
         this.getMonths()
     },
     computed:{
-         ...mapState(['classes', 
-                        'sections', 
-                        'months',
-                        'sessions',
-                        'classLoading',                        
-                        ]),
+         ...mapState(['classes', 'sections', 'months', 'sessions', 'classLoading']),
         ...mapGetters(['attandanceChecker'])
     },
     methods:{
         ...mapActions(['getClasses', 'fetchSections', 'getSessions', 'getMonths']),
         searchStudent(e){
-            console.log(e);            
-            // let class_id = e.target.children[0].children[0].children[1].value;
-            // let section_id = e.target.children[0].children[1].children[1].value;
-
-            let formData = new FormData();
+            this.$store.state.searchLoading = true
+            let formData = new FormData(e.target);
             formData.append('class_id', this.form.class_id);
             formData.append('section_id', this.form.section_id);
-            // let _fd = this.$data.form;
-            // Object.entries(_fd).forEach(function(val) {
-            //     formData.append(val[0], val[1]);
-            // });
 
-            Axios.post('/students-by-class', formData)
+            Axios.post('/searchstudent', formData)
             .then(response => {
-                let data = response.data;
-                if(data.error == true){
-                    this.$swal(data.message)
-                }else if(!data.students.length) {
-                    this.$swal('There are no Students')
-                    
+                this.$store.state.searchLoading = false
+                let data = JSON.parse(response.data);
+                if(data.error){
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }else {
-                    $('#session_month').slideDown(500);
-               
-                    this.$swal(data.message);
-                    this.students = data.students[0];  
+                    $('#session_month').slideDown(500);               
+                    this.students = data.students;  
                     this.class_name = data.class_name;
                     this.section_name = data.section_name;   
-                    $('#attendance_table').fadeIn(500);     
-                 
+                    $('#attendance_table').fadeIn(500);                      
                 }
                 console.log(data);
-                console.log(data.students[0]);                
             })
-            .catch(err => {
-                console.error(err);                
-            })
+            .catch(err => console.error(err) )
+            .finally(() => this.$store.state.searchLoading = false )
         },
-        sendAttendance(e, id){
+        recordOne(e, id){
             var status;
-            
-            // if (e.target.classList.contains('single_attendance')) {
-            //     var status = e.target.parentElement.previousElementSibling.children[0].value;                     
-            // }else if (e.target.classList.contains('fa-check')) {
-            //     var status = e.target.parentElement.parentElement.previousElementSibling.children[0].value;                     
-            // }
-            
             //Check if button was clicked
             if (e.target.classList.contains('single_attendance')) {
                 if (e.target.parentElement.previousElementSibling.children[1].checked) {
@@ -258,16 +257,19 @@ export default {
                 }else if(e.target.parentElement.parentElement.previousElementSibling.children[3].checked){
                     status = e.target.parentElement.parentElement.previousElementSibling.children[3].value;
                 }                     
-            }
-                        
-            console.log(status);
-            
+            }                                
            
             this.form.student_id = id;
             let _fd = this.$data.form;
 
-            if (this.form.my_date == '' || this.form.student_id == '' || this.form.session == '' || this.form.month == '') {
-                this.$swal("Fill all fields")
+            if (this.form.date === '' || this.form.student_id === '' || this.form.session === '' || this.form.month === '') {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: "Fill all fields",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }else{
                 this.recordLoading = true
                 let formData = new FormData();
@@ -279,25 +281,32 @@ export default {
                 Axios.post('/attendance/one', formData)
                 .then(res => {
                     this.recordLoading = false
-                    console.log(res);
-                    let data = res.data;
-               
-                    if (data.error == true) {
-                        Swal.fire(data.message)
+                    let data = JSON.parse(res.data);
+                    
+                    if (data.error) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }else{
-                        Swal.fire(data.message);                        
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });                        
                     }
                     
                 })
-                .catch(err => {
-                    this.recordLoading = false
-                    console.error(err);
-                    
-                })
+                .catch(err => console.error(err) )
+                .finally(() => this.recordLoading = false )
             }
         },
-        record(e){
-            e.preventDefault()
+        recordAll(e){
             let formData = new FormData(e.target);
             let _fd = this.$data.form;
             Object.entries(_fd).forEach(val => {
@@ -305,6 +314,24 @@ export default {
             });
             Axios.post('/attendance/all', formData)
             .then(res => {
+                let data = JSON.parse(res.data);
+                if(data.error){
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
                 console.log(res);                                  
             })
             .catch(err => {
@@ -323,6 +350,9 @@ export default {
 
 
 <style scoped>
+    .spinner{
+        font-size: 50px;
+    }
     #attendance_table{
         display: none;
     }

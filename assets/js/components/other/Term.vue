@@ -120,7 +120,13 @@ export default {
                 .then(response => {
                     let data = JSON.parse(response.data);
                     if (data.error) {
-                        Swal.fire(data.message)
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }else{
                         this.$store.state.terms = data.terms
                     }
@@ -139,7 +145,13 @@ export default {
                 .then(response => {
                     let data = JSON.parse(response.data);
                     if (data.error) {
-                        Swal.fire(data.message)
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }else{
                         this.$store.state.terms = [...this.$store.state.terms, data.term]                        
                     }

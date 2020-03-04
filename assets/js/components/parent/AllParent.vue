@@ -40,7 +40,7 @@
                                 <tbody id="student-table-body" v-if="!parentLoading">
                                     <tr class="text-center" v-for="(parent, index) in parents" :key="parent.id">                                        
                                         <td>{{ parent.fullname }}</td>
-                                        <td>{{ parent.gender }}</td>
+                                        <td class="text-capitalize">{{ parent.gender }}</td>
                                         <td>
                                             <button @click="sendViewId(parent.id)" data-toggle="modal" data-target="#parent_view_modal" class="btn btn-lg shadow-dark-peel bg-warning rounded-bottom text-light">
                                                 <i class="fas fa-eye text-light"></i>

@@ -57,24 +57,16 @@ class SubjectsRepository extends ServiceEntityRepository
         $query->execute();
     }
 
-    public function checkIfSubjectExist($subject_name)
+    public function checkIfSubjectExist($subject_name, $subject_code)
     {        
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT id FROM subjects WHERE subject = :subject";
+        $sql = "SELECT id FROM subjects WHERE subject = :subject AND subject_code = :subject_code";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['subject' => $subject_name]);
+        $stmt->execute(['subject' => $subject_name, 'subject_code' => $subject_code]);
         return $stmt;
     }
 
-    public function checkIfSubjectCodeExist($subject_code){
-        $conn = $this->getEntityManager()->getConnection();        
-        $sql = "SELECT id FROM subjects WHERE subject_code = :subject_code";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(['subject_code' => $subject_code]);
-        return $stmt;
-    }
-
-    public function getStudentSubjects($id){
+    public function getGroupSubjects($id){
         $conn = $this->getEntityManager()->getConnection();
         
         $sql = "SELECT subjects.* FROM
@@ -91,5 +83,7 @@ class SubjectsRepository extends ServiceEntityRepository
         }
         return $subjects;
     }
+
+
 
 }

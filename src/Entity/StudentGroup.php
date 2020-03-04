@@ -104,22 +104,22 @@ class StudentGroup
     //     return $this;
     // }
 
-    // public function addSubject(Subjects $subject): self
-    // {
-    //     if (!$this->subjects->contains($subject)) {
-    //         $this->subjects[] = $subject;
-    //     }
+    public function addSubject(Subjects $subject): self
+    {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects[] = $subject;
+        }
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function removeSubject(Subjects $subject): self
-    // {
-    //     if ($this->subjects->contains($subject)) {
-    //         $this->subjects->removeElement($subject);
-    //     }
+    public function removeSubject(Subjects $subject): self
+    {
+        if ($this->subjects->contains($subject)) {
+            $this->subjects->removeElement($subject);
+        }
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
 }

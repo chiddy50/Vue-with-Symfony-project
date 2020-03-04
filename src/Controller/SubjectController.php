@@ -34,20 +34,15 @@ class SubjectController extends AbstractController
             return new JsonResponse($data);
             exit;
         }
-        $stmt = $subjectRepository->checkIfSubjectExist($subject_name);
-        $stmt2 = $subjectRepository->checkIfSubjectCodeExist($subject_code);
+        $stmt = $this->getDoctrine()->getRepository(Subjects::class)->checkIfSubjectExist($subject_name, $subject_code);
         
         if($stmt->rowCount() === 1){
             $return = ['error' => true, 'message' => "This subject exists already."];           
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
             exit();
-        }elseif($stmt2->rowCount() === 1){
-            $return = ['error' => true, 'message' => "This subject code exists already."];           
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit();
         }
+        
         
         $subject_type_entity = $this->getDoctrine()->getRepository(SubjectType::class)->find($subject_type);
         
@@ -128,21 +123,10 @@ class SubjectController extends AbstractController
         $subject = $this->getDoctrine()->getRepository(Subjects::class)->find($id);
         $subjectTypeEntity = $this->getDoctrine()->getRepository(SubjectType::class)->find($subject_type);
         
-        $stmt = $subjectRepository->checkIfSubjectExist($subject_name);
-        $stmt2 = $subjectRepository->checkIfSubjectCodeExist($subject_code);
+        // $stmt = $this->getDoctrine()->getRepository(Subjects::class)->checkIfSubjectExist($subject_name);
+        // $stmt2 = $this->getDoctrine()->getRepository(Subjects::class)->checkIfSubjectCodeExist($subject_code);
         $dataserializer = new DataSerializer;
-        
-        if($stmt->rowCount() === 1){
-            $return = ['error' => true, 'message' => "This subject exists already."];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit();
-        }elseif($stmt2->rowCount() === 1){
-            $return = ['error' => true, 'message' => "This subject code exists already."];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit();
-        }
+
 
         $subject->setSubject($subject_name);
         $subject->setSubjectCode($subject_code);
@@ -151,10 +135,15 @@ class SubjectController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $return = ['error' => false];
-        $data = $dataserializer->serializeWithoutGroup($return);
+        $subjects = $this->getDoctrine()->getRepository(Subjects::class)->findAll();
+
+        $return = ['error' => false, 'subjects' => $subjects];
+        $groups = ['groups' => ['subject:add']];
+        $data = $dataserializer->serializeData($return, $groups);
         return new JsonResponse($data);
     }
+
+    // Subject type routes
 
     /**
      * @Route("/new-subtype", name="new_subject_type", methods="POST")
@@ -278,25 +267,5 @@ class SubjectController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/studentsubject", name="student_subject", methods="POST")
-     */
-    public function studentSubject(Request $request, SubjectsRepository $subjectRepository)
-    {
-        $group_id = $request->request->get('group_id');
-        // $subjects = $subjectRepository->getStudentSubjects($group_id);
-        $dataserializer = new DataSerializer;
-        $subjects = $this->getDoctrine()->getRepository(Subjects::class)->getStudentSubjects($group_id);
-
-
-        // if (!$subjects) {
-        //     return new JsonResponse(['message' => "Student has no subjects", 'error' => true]);
-        //     exit();
-        // }
-        $return = ['error' => false, 'subjects' => $subjects];
-        $data = $dataserializer->serializeWithoutGroup($return);
-        return new JsonResponse($data);
-        // return new JsonResponse(['subjects' => $subjects, 'error' => false]);
-    }
-
+   
 }

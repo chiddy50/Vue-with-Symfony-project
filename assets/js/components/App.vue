@@ -53,6 +53,7 @@ export default {
 </script>
 
 <style>
+    
     i#spinner-md{
     font-size: 30px;
     }

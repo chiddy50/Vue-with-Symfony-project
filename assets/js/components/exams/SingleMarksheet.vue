@@ -194,12 +194,10 @@ export default {
         
             let formData = new FormData();
             formData.append('group_id', this.student.student_group.id);
-
-            Axios.post('/studentsubject', formData)
+            Axios.post('/get-group-subjects', formData)
             .then(res => {
                 this.loader = false
                 let data = JSON.parse(res.data)
-                console.log(data);
                 if (data.error) {
                     Swal.fire({
                         position: 'top-end',
@@ -244,9 +242,7 @@ export default {
             })
             .catch(err => console.error(err))
             .finally(() => this.sendScoresLoad = false )
-        },
-
-        
+        }
     }
 }
 </script>

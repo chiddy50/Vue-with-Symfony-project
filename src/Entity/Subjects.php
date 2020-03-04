@@ -165,25 +165,25 @@ class Subjects
         return $this;
     }
 
-    // public function addGroup(StudentGroup $group): self
-    // {
-    //     if (!$this->groups->contains($group)) {
-    //         $this->groups[] = $group;
-    //         $group->addSubject($this);
-    //     }
+    public function addGroup(StudentGroup $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->addSubject($this);
+        }
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function removeGroup(StudentGroup $group): self
-    // {
-    //     if ($this->groups->contains($group)) {
-    //         $this->groups->removeElement($group);
-    //         $group->removeSubject($this);
-    //     }
+    public function removeGroup(StudentGroup $group): self
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+            $group->removeSubject($this);
+        }
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     
 }

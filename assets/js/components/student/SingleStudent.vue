@@ -18,9 +18,8 @@
             <div class="col-8-xxxl col-12">               
                 <div class="row">
                     <CheckSingleAttendance :student_id="student_id"/>                    
-                    <SubjectTable
-                    :studentSubject="studentSubject" 
-                    :firstname="student.firstname" :lastname="student.lastname"/>                                        
+                    <SubjectTable :studentSubject="studentSubject" :firstname="student.firstname"
+                     :lastname="student.lastname"/>                                        
                 </div>
                 <div class="row">
                     <div v-if="showError" class="col-8-xxxl col-12 error-box">
@@ -94,7 +93,7 @@ export default {
             let formData = new FormData();
             formData.append('group_id', payload);
 
-            Axios.post('/studentsubject', formData)
+            Axios.post('/get-group-subjects', formData)
             .then(res => {
                 let subjects = res.data.subjects;
                 this.studentSubjectLoad = false;

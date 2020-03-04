@@ -16,6 +16,8 @@ export default {
     student_group: [],
     studentSubject: [],
     exams: [],
+    searchLoading: false,
+    groupLoading: false,
     classLoading: false,
     sectionLoading: false,
     parentLoading: false,

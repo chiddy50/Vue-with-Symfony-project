@@ -34,34 +34,7 @@ class AcademicController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/newgroupsubject", name="new_group_subject", methods="POST")
-     */
-    public function newgroupSubject(EntityManagerInterface $em, Request $request, StudentGroupRepository $stRepo)
-    {
-        $subject_id = $request->request->get('subject_id');
-        $group_id = $request->request->get('group_id');
-        $stmt = $stRepo->findIfClassCodeExists($group_id, $subject_id);
-        if($stmt->rowCount() == 1){
-            $message = "This exists already.";
-            $error = true;
-            $return = ['error' => $error, 'message' => $message];
-            return new JsonResponse($return);
-            exit;
-        }
-
-        $group = $em->getRepository(StudentGroup::class)->find($group_id);
-        $subject = $em->getRepository(Subjects::class)->find($subject_id);
-        $group->addSubject($subject);
-
-        $em->persist($group);
-        $em->flush();
-
-        $message = "Successfully Added.";
-        $error = false;
-        $return = ['error' => $error, 'message' => $message];
-        return new JsonResponse($return);
-    }
+   
 
     /**
      * @Route("/allgroupsubjects", name="all_subject_group", methods="POST")

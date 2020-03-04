@@ -56,11 +56,11 @@ class Classes
      */
     private $students;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\StudentAttendance", mappedBy="class_id")
-     * @Groups("class:remove")
-     */
-    private $class_attendance;
+    // /**
+    //  * @ORM\ManyToMany(targetEntity="App\Entity\StudentAttendance", mappedBy="class_id")
+    //  * @Groups("class:remove")
+    //  */
+    // private $class_attendance;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Exam", mappedBy="classes", orphanRemoval=true)
@@ -122,62 +122,8 @@ class Classes
         return $this;
     }
 
-    // /**
-    //  * @return Collection|Subjects[]
-    //  */
-    // public function getSubjects(): Collection
-    // {
-    //     return $this->subjects;
-    // }
+   
 
-    // public function addSubject(Subjects $subject): self
-    // {
-    //     if (!$this->subjects->contains($subject)) {
-    //         $this->subjects[] = $subject;
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeSubject(Subjects $subject): self
-    // {
-    //     if ($this->subjects->contains($subject)) {
-    //         $this->subjects->removeElement($subject);
-    //     }
-
-    //     return $this;
-    // }
-
-    // /**
-    //  * @return Collection|StudentInfo[]
-    //  */
-    // public function getStudents(): Collection
-    // {
-    //     return $this->students;
-    // }
-
-    // public function addStudent(StudentInfo $student): self
-    // {
-    //     if (!$this->students->contains($student)) {
-    //         $this->students[] = $student;
-    //         $student->setClasses($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeStudent(StudentInfo $student): self
-    // {
-    //     if ($this->students->contains($student)) {
-    //         $this->students->removeElement($student);
-    //         // set the owning side to null (unless already changed)
-    //         if ($student->getClasses() === $this) {
-    //             $student->setClasses(null);
-    //         }
-    //     }
-
-    //     return $this;
-    // }
 
     // /**
     //  * @return Collection|StudentAttendance[]
@@ -202,37 +148,6 @@ class Classes
     //     if ($this->class_attendance->contains($classAttendance)) {
     //         $this->class_attendance->removeElement($classAttendance);
     //         $classAttendance->removeClassId($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // /**
-    //  * @return Collection|Exam[]
-    //  */
-    // public function getExams(): Collection
-    // {
-    //     return $this->exams;
-    // }
-
-    // public function addExam(Exam $exam): self
-    // {
-    //     if (!$this->exams->contains($exam)) {
-    //         $this->exams[] = $exam;
-    //         $exam->setClasses($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeExam(Exam $exam): self
-    // {
-    //     if ($this->exams->contains($exam)) {
-    //         $this->exams->removeElement($exam);
-    //         // set the owning side to null (unless already changed)
-    //         if ($exam->getClasses() === $this) {
-    //             $exam->setClasses(null);
-    //         }
     //     }
 
     //     return $this;

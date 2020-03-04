@@ -48,7 +48,7 @@ class StudentGroupRepository extends ServiceEntityRepository
     }
     */
 
-    public function findIfClassCodeExists($group_id, $subject_id){
+    public function subjectGroupExistense($group_id, $subject_id){
         $conn = $this->getEntityManager()->getConnection();
         
         $sql = "SELECT student_group_id, subject_id

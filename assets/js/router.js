@@ -8,7 +8,6 @@ import SingleStudent from './components/student/SingleStudent.vue';
 import CreateStudent from './components/student/CreateStudent.vue';
 import EditStudent from './components/student/EditStudent.vue';
 import StudentGroup from './components/student/StudentGroup.vue';
-import StudentSubject from './components/student/StudentSubject.vue';
 
 import AllParent from './components/parent/AllParent.vue';
 import Parent from './components/parent/Parent.vue';
@@ -16,11 +15,13 @@ import EditParent from './components/parent/EditParent.vue';
 
 import AllStaff from './components/staff/AllStaff.vue';
 //Attendance routes
-import StudentAttendance from './components/attendance/StudentAttendance.vue';
+import ClassAttendance from './components/attendance/ClassAttendance.vue';
 import SubjectAttendance from './components/attendance/SubjectAttendance.vue';
+
 
 import Exam from './components/exams/Exam.vue';
 import StudentMarkSheet from './components/exams/StudentMarkSheet.vue';
+import ClassMarksheet from './components/exams/ClassMarksheet.vue';
 import SingleMarksheet from './components/exams/SingleMarksheet.vue';
 import EditSingleMarksheet from './components/exams/EditSingleMarksheet.vue';
 
@@ -98,6 +99,11 @@ const router = new VueRouter({
             props: true
         },
         {
+            path: '/class-mark-sheet',
+            component: ClassMarksheet
+        },
+        
+        {
             path: '/edit-marksheet/:id',
             component: EditSingleMarksheet
         },  
@@ -108,12 +114,6 @@ const router = new VueRouter({
             name: 'sections'
         },
          
-        {
-            path: '/subjects/:id',
-            component: StudentSubject,
-            name: 'student_subject'
-        },        
-        
         {
             path: '/subject',
             component: Subject
@@ -148,7 +148,7 @@ const router = new VueRouter({
         },
         {
             path: '/class-attendance',
-            component: StudentAttendance
+            component: ClassAttendance
         },
         {
             path: '/subject-attendance',

@@ -5,11 +5,17 @@ export default {
             state.classLoading = true;
             Axios.post('/all-classes')
             .then(response => {
-                let classes = JSON.parse(response.data);
-                if (classes.error) {
-                    Swal.fire(classes.message)
+                let data = JSON.parse(response.data);
+                if (data.error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }else{
-                    state.classes = classes.classes;
+                    state.classes = data.classes;
                 }
             })
             .catch(err => {
@@ -28,7 +34,13 @@ export default {
             .then(response => {
                 let data = JSON.parse(response.data)
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }else{
                     state.subjects = data.subjects;   
                 }    
@@ -50,7 +62,13 @@ export default {
             .then(response => {                
                 let data = JSON.parse(response.data)
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                    
                 }else{
                     state.subjectTypes = data.types;   
                 }
@@ -70,7 +88,13 @@ export default {
             .then(response => {
                 let data = JSON.parse(response.data)
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                    
                 }else{
                     state.sections = data.sections;
                 }
@@ -90,7 +114,13 @@ export default {
             .then(response => {
                 let data = JSON.parse(response.data)
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                    
                 }else{
                     state.parents = data.parents;
                 }
@@ -109,7 +139,13 @@ export default {
             .then(response => {                
                 let data = JSON.parse(response.data)
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                    
                 }else{
                     state.genders = data.genders;
                 }
@@ -137,11 +173,16 @@ export default {
         if (!state.months.length) {
             Axios.post('/months')
             .then(response => {
-                let data = JSON.parse(response.data)
-                console.log(data);
+                let data = JSON.parse(response.data);
                 
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                   
                 }else{
                     state.months = data.months;
                 }
@@ -155,9 +196,15 @@ export default {
         if (!state.sessions.length) {
             Axios.post('/sessions')
             .then(response => {
-                let data = JSON.parse(response.data)
+                let data = JSON.parse(response.data);
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                    
                 }else{
                     state.sessions = data.sessions;
                 }
@@ -167,41 +214,27 @@ export default {
             });
         }
     },
-    getAll(state){
-        state.classLoading = true;
-        Axios.all([
-            Axios.post('/parents'),
-            Axios.post('/getgroup'),
-            Axios.post('/months'),
-            Axios.post('/sessions')
-        ])
-        .then(res => {
-            state.classLoading = false;
-            console.log(res);
-            state.parents = res[0].data.parents;
-            state.student_group = res[1].data.student_groups;
-            state.months = res[2].data.months;
-            state.sessions = res[3].data.sessions;                    
-        })
-        .catch(err => {
-            state.classLoading = false;
-            console.error(err);
-        });
-    },
     getGroups(state){
         // if (!state.student_group.length) {
+            state.groupLoading = true;
             Axios.post('/student-groups')
             .then(response => {
-                let data = JSON.parse(response.data)
+                state.groupLoading = false;
+                let data = JSON.parse(response.data);
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });              
                 }else{
                     state.student_group = data.student_groups;
                 }
             })
-            .catch(error => {
-                console.error(error);
-            });            
+            .catch(error => console.error(error) )
+            .finally(() => state.groupLoading = false);
         // }
     },
     getStudents(state){
@@ -211,7 +244,13 @@ export default {
             .then(response => {
                 let data = JSON.parse(response.data)
                 if (data.error) {
-                    Swal.fire('Error!', data.message, 'error')                    
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });                    
                 }else{
                     state.students = data.students;
                 }
@@ -231,7 +270,13 @@ export default {
             .then(res => {
                 let data = JSON.parse(res.data);
                 if(data.error){
-                    Swal.fire('Error!', data.message, 'error');
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }else{
                     state.terms = data.terms;
                 }                
@@ -304,24 +349,29 @@ export default {
         });
     },
  
-    searchStudent(state)
+    searchStudent(state, payload)
     {
-        let formData = new FormData();
-        formData.append('class_id', state.search.class_id);
-        formData.append('section_id', state.search.section_id);
+        state.studentsLoading = true;
+        let formData = new FormData(payload.target);
         Axios.post('/searchstudent', formData)
         .then(response => {   
-            let data = JSON.parse(response.data)
+            state.studentsLoading = false;
+            let data = JSON.parse(response.data);
             if (data.error) {
-                Swal.fire('Error!', data.message, 'error')                    
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });                    
             }else{
                 state.students = data.students;
             }
                     
         })
-        .catch(err => {
-            console.error(err);            
-        });
+        .catch(err => console.error(err) )
+        .finally(() => state.studentsLoading = false );
     },
 
     fetchGroupSubject(state)

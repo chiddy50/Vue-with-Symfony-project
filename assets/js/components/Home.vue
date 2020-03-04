@@ -13,7 +13,7 @@
                         <div class="col-6">
                             <div class="item-content">
                                 <div class="item-title">Students</div>
-                                <div class="item-number" v-if="!countLoader">{{ studentCount }}</div>
+                                <div class="item-number" v-if="!countLoader"><span class="counter" :data-num="studentCount" v-text="studentCount"></span></div>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                         <div class="col-6">
                             <div class="item-content">
                                 <div class="item-title">Parents</div>
-                                <div class="item-number" v-if="!countLoader">{{ parentCount }}</div>
+                                <div class="item-number" v-if="!countLoader"><span class="counter" :data-num="parentCount" v-text="parentCount"></span></div>
                             </div>
                         </div>
                     </div>
@@ -87,19 +87,7 @@
                             <div class="item-title">
                                 <h3>Students</h3>
                             </div>
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                    aria-expanded="false">...</a>
-
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#"><i
-                                            class="fas fa-times text-orange-red"></i>Close</a>
-                                    <a class="dropdown-item" href="#"><i
-                                            class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
-                                    <a class="dropdown-item" href="#"><i
-                                            class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
-                                </div>
-                            </div>
+                           
                         </div>
                         <div class="doughnut-chart-wrap">
                             <canvas id="student-doughnut-chart" width="100" height="300"></canvas>

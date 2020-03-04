@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-12" v-if="filteredStudents.length">
+    <div class="col-lg-12">
         <div class="card dashboard-card-eleven">
             <div class="card-body">
 
@@ -63,7 +63,7 @@
                                             <input type="radio" class="present_field" :name="'attendance['+[student.id]+']'" value="Absent">
                                         </td>   
                                         <td class="button_class">
-                                            <button type="button" @click.prevent="takeSingleClassAttendance($event, student.id)" class="btn single_attendance btn-lg text-light rounded-circle bg-orange-peel">
+                                            <button :disabled="singleRecordLoading" type="button" @click.prevent="takeSingleSubjectAttendance($event, student.id)" class="btn single_attendance btn-lg text-light rounded-circle bg-orange-peel">
                                                 <i class="fas fa-check text-light"></i>
                                             </button>
                                             
@@ -72,9 +72,9 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="form-group col-6">
-                                <button type="submit" class="fw-btn-fill btn-gradient-yellow">Record</button>
-                            </div>
+                                <button :disabled="singleRecordLoading" type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark rounded-0">
+                                    Record
+                                </button>      
                         </div>
                     </form>
                 </div>
@@ -88,7 +88,8 @@ import Axios from 'axios';
 import { mapState, mapActions } from 'vuex'
 
 export default {
-    name: 'subjectAttendanceTable',
+    name: 'SubjectAttendanceTable',
+    props: ['subjects'],
     data(){
         return{
             singleRecordLoading: false,
@@ -107,21 +108,42 @@ export default {
         this.fetchSubjects()
     },
      computed:{
-        ...mapState(['months', 'sessions', 'filteredStudents', 'subjects']),
+        ...mapState(['months', 'sessions', 'filteredStudents']),
     },
     methods:{
         ...mapActions(['getSessions', 'getMonths', 'fetchSubjects']),
         submitSubjectAttendance(e){
+            this.singleRecordLoading = true
             let fd = new FormData(e.target);
-            Axios.post('/student-class-attendance', fd)
+            Axios.post('/student-subject-attendance', fd)
             .then(res => {
-                console.log(res);                
+                this.singleRecordLoading = false
+
+                let data = JSON.parse(res.data)    
+                if (data.error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }          
             })
             .catch(err => {
                 console.error(err);                
-            });
+            })
+            .finally(() => this.singleRecordLoading = false )
         },
-        takeSingleClassAttendance(e, id){
+        takeSingleSubjectAttendance(e, id){
             var status, target, spinner;
             if (e.target.classList.contains('single_attendance')) {
                 target = e.target;
@@ -146,13 +168,17 @@ export default {
                 }                     
             }
                         
-            console.log(e);
-
             this.form.student_id = id;
             let _fd = this.$data.form;
 
             if (this.form.date === '' || this.form.student_id === '' || this.form.session === '' || this.form.month === '' || this.form.subject === '') {
-                Swal.fire('Error!', "Fill all fields", 'error')
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: "Fill all fields",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }else{
                 this.singleRecordLoading = true
                 let formData = new FormData();
@@ -161,28 +187,37 @@ export default {
                 });
                 formData.append('status', status)
                 
-                Axios.post('/single-class-attendance', formData)
+                Axios.post('/single-subject-attendance', formData)
                 .then(res => {
                     this.singleRecordLoading = false
-                    console.log(res);
                     target.hidden = false;
                     spinner.classList.add('spinner-md');
 
-                    let data = res.data;
+                    let data = JSON.parse(res.data);
+                    console.log(data);
                
-                    if (data.error == true) {
-                        Swal.fire('Error!', data.message, 'error')
+                    if (data.error) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }else{
-                        Swal.fire('Success!', data.message, 'success');                        
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });                      
                     }
                     
                 })
-                .catch(err => {
-                    this.singleRecordLoading = false
-                    console.error(err);
-                    
-                })
+                .catch(err => console.error(err) )
                 .finally(() => {
+                    this.singleRecordLoading = false
                     target.hidden = false;
                     spinner.classList.add('spinner-md');
                 })

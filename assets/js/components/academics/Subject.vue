@@ -18,13 +18,16 @@
                             </div>
                             <div class="col-12-xxxl col-lg-4 col-12 form-group">
                                 <label>Subject Code</label>
-                                <input type="text" v-model="form.subject_code" name="subject_code" class="form-control rounded-0">
+                                <select v-model="form.subject_code" name="subject_code" class="form-control rounded-0">
+                                    <option disabled>Please Select Code *</option>
+                                    <option v-for="(subject_code, index) in subject_codes" :key="index" :value="subject_code">{{ subject_code }}</option>
+                                </select>
                             </div>
                             <div class="col-12-xxxl col-lg-4 col-12 form-group">                        
                                 <label>Subject Type</label>
                                 <select v-model="form.subject_type" name="subject_type" class="form-control rounded-0">
                                     <option disabled>Please Select Type *</option>
-                                    <option v-for="type in subjectTypes" :key="type.id" :value="type.id">{{ type.subject_type }}</option>
+                                    <option v-for="(subType, index) in subjectTypes" :key="index" :value="subType.id">{{ subType.subject_type }}</option>
                                 </select>
                             </div>
                             <div class="col-12 form-group mg-t-8">
@@ -76,16 +79,16 @@
                             </tbody>
                                 <tr class="text-center" v-else>
                                     <td>
-                                        <i class="fas fa-spinner fa-spin text-warning"  id="spinner-md"></i>
+                                        <i class="fas fa-spinner fa-spin text-warning"></i>
                                     </td>
                                     <td>
-                                        <i class="fas fa-spinner fa-spin text-warning"  id="spinner-md"></i>
+                                        <i class="fas fa-spinner fa-spin text-warning"></i>
                                     </td>
                                     <td>
-                                        <i class="fas fa-spinner fa-spin text-warning"  id="spinner-md"></i>
+                                        <i class="fas fa-spinner fa-spin text-warning"></i>
                                     </td>
                                     <td>
-                                        <i class="fas fa-spinner fa-spin text-warning"  id="spinner-md"></i>
+                                        <i class="fas fa-spinner fa-spin text-warning"></i>
                                     </td>                               
                                 </tr>
                         </table> 
@@ -142,26 +145,26 @@
                                     <td>{{ subject.subject_type }}</td>                                    
                                     <td class="text-center">
                                         <button class="btn btn-lg shadow-dark-peel bg-danger rounded-bottom text-light" @click="deleteType(subject.id, index, $event)">
-                                            <i class="fas fa-trash text-light"></i> Delete
+                                            <i class="fas fa-trash text-light"></i> 
                                         </button>
                                         <i class="fas fa-spinner fa-spin text-danger spinner-sm"></i>
                                     </td>
                                     <td>
                                         <button class="btn btn-lg shadow-dark-peel bg-success rounded-bottom text-light" @click="editType(subject)">
-                                            <i class="fas fa-cogs text-light"></i> Edit
+                                            <i class="fas fa-cogs text-light"></i> 
                                         </button>
                                     </td>
                                 </tr>
                             </tbody>
                             <tr v-else>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-warning text-center"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-warning text-center"></i>
                                 </td>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-warning text-center"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-warning text-center"></i>
                                 </td>
                                 <td>
-                                    <i class="fas fa-spinner fa-spin text-warning text-center"  id="spinner-md"></i>
+                                    <i class="fas fa-spinner fa-spin text-warning text-center"></i>
                                 </td>                               
                             </tr>
                         </table> 
@@ -179,12 +182,13 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import Header from '../inc/Header.vue';
 
 export default {
-    name: 'Classes',
+    name: 'Subject',
     components:{
         Header
     },
     data(){
         return{
+            subject_codes: ['Senior', 'Junior', 'General'],
             form: {
                 id: '',
                 subject_name: '',
@@ -239,10 +243,16 @@ export default {
                 let formData = new FormData(e.target);
                 formData.append('id', this.form.id)
                 Axios.post('/edit-subject', formData)
-                .then(response => {
+                .then(response => {                    
                     let data = JSON.parse(response.data);
                     if (data.error) {
-                        Swal.fire('Error!', data.message, 'error')
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 6000
+                        });
                     }else{
                         this.edit = false
                         this.$store.state.subjects = data.subjects

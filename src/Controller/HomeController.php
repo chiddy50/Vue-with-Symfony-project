@@ -15,9 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 class HomeController extends AbstractController
 {
     /**
-     * @Route("/{vueRoute}/{slug}/{slug2}", name="home_app", methods="GET")
+     * @Route("/{vueRoute}/{slug}", name="home_app", methods="GET")
      */
-    public function home($vueRoute = "", $slug = "", $slug2 ="")
+    public function home($vueRoute = "", $slug = "")
     {
         return $this->render('home/index.html.twig');
     }

@@ -11,13 +11,13 @@
                         </div>
                         
                     </div>
-                    <form class="mg-b-20" @submit.prevent="searchStudent">
+                    <form class="mg-b-20" @submit.prevent="searchStudent($event)">
                         <div class="row gutters-8">
                             <div class="col-3-xxxl col-xl-4 col-lg-3 col-12 form-group">
                                 <input type="text" @keyup="liveSearch($event)" id="searchStudent" v-model="name" placeholder="Search By Name or Roll No ..." class="form-control">
                             </div>
                             <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                <select v-model="search.class_id" class="form-control rounded-0">
+                                <select v-model="search.class_id" name="class_id" class="form-control rounded-0">
                                     <option disabled selected aria-selected>Select Class</option>                                                 
                                     <option v-for="oneClass in classes" :value="oneClass.id" :key="oneClass.id">
                                         {{ oneClass.class_name }}
@@ -25,7 +25,7 @@
                                 </select>
                             </div>
                             <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                <select v-model="search.section_id" id="section2" class="form-control rounded-0">
+                                <select v-model="search.section_id" name="section_id" class="form-control rounded-0">
                                     <option disabled selected aria-selected>Choose Section</option>
                                     <option v-for="section in sections" :key="section.id" :value="section.id">
                                         {{ section.section_name }}
@@ -91,6 +91,108 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-sm-12">
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>RESULT PROCESSING SHEET</h3>
+                        </div>                        
+                    </div>
+                    <form class="mg-b-20">
+                        <div class="row gutters-8">
+                            <div class="col-3-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                <select class="form-control rounded-0">
+                                    <option disabled selected aria-selected>Select Class</option>                                                 
+                                    
+                                </select>
+                            </div>
+                            <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                <select id="section2" class="form-control rounded-0">
+                                    <option disabled selected aria-selected>Choose Section</option>                                    
+                                </select>
+                            </div>
+                            <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
+                                <button type="submit" class="fw-btn-fill btn-gradient-yellow">SEARCH</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table display data-table table-striped table-bordered text-nowrap">
+                            <thead>
+                                <tr>                                    
+                                    <th>STUDENT NAME</th>
+                                    <th colspan="5">ENGLISH</th>                                    
+                                </tr>
+                                <tr>                                    
+                                    <th></th>
+                                    <th>1ST C/A</th>
+                                    <th>2ND C/A</th>
+                                    <th>EXAM</th>
+                                    <th>TOTAL</th>
+                                    <th>GRADE</th>                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                                             
+                            </tbody>
+                                                 
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>REPORT CARD FOR: MARK CANTU</h3>
+                        </div>                        
+                    </div>
+                    <form class="mg-b-20">
+                        <div class="row gutters-8">
+                            <div class="col-4-md col-xl-3 col-lg-3 col-12 form-group">
+                                <input type="text" disabled placeholder="Session" class="form-control">
+                            </div>
+                            <div class="col-4-md col-xl-3 col-lg-3 col-12 form-group">
+                                <input type="text" disabled placeholder="Term" class="form-control">
+                            </div>
+                            <div class="col-4-md col-xl-3 col-lg-3 col-12 form-group">
+                                <input type="text" disabled placeholder="Total Score" class="form-control">
+                            </div>
+                            <div class="col-4-md col-xl-3 col-lg-3 col-12 form-group">
+                                <input type="text" disabled placeholder="Position" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table display data-table table-striped table-bordered text-nowrap">
+                            <thead>
+                                <tr>                                    
+                                    <th>Subjects</th>
+                                    <th>1st C/A</th>                                    
+                                    <th>2nd C/A</th>                                    
+                                    <th>Exam</th>                                    
+                                    <th>Total</th>                                    
+                                    <th>Remarks</th>                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                                             
+                            </tbody>
+                                                 
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </template>

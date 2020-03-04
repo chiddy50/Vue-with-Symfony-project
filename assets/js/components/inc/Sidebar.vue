@@ -86,7 +86,7 @@
                             <a href="#" class="nav-link"><i class="flaticon-checklist"></i><span>Attendence</span></a>
                             <ul class="nav sub-group-menu">
                                 <li class="nav-item">
-                                    <router-link to="/class-attendance" tag="a" class="nav-link">
+                                    <router-link to="/school-attendance" tag="a" class="nav-link">
                                         <i class="fas fa-angle-right"></i>Take School Attendence
                                     </router-link>
                                 </li>
