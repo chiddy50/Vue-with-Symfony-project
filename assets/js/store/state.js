@@ -35,11 +35,9 @@ export default {
     maleCount: '',
     femaleCount: '',
     singleSection: '',
-    singleStudent: {
-        data:'',
-        admission_date: '',
-        infoLoading: false,
-        dob: ''
+    data: {
+        className: null,
+        sectionName: null
     },
     search:{
         section_id: '',

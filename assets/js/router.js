@@ -93,10 +93,9 @@ const router = new VueRouter({
             name: 'classes'
         }, 
         {
-            path: '/single-marksheet',
+            path: '/single-marksheet/:id',
             component: SingleMarksheet,
-            name: 'SingleMarksheet',
-            props: true
+            name: 'SingleMarksheet'
         },
         {
             path: '/class-mark-sheet',

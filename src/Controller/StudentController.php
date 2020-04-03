@@ -180,7 +180,7 @@ class StudentController extends AbstractController
         $roll_no = $student->getRollNo();
         $dob = $student->getDob();
         $admission_date = $student->getAdmissionDate();
-        $gender_idd = $student->getGender();
+        $gender_id = $student->getGender();
         $parent = $student->getParent();
         $classes = $student->getClasses();
         $section = $student->getSection();
@@ -190,7 +190,7 @@ class StudentController extends AbstractController
         $parent_entity = $this->getDoctrine()->getRepository(Parents::class)->find($parent);
         $section_entity = $this->getDoctrine()->getRepository(Section::class)->find($section);
         $group_entity = $this->getDoctrine()->getRepository(StudentGroup::class)->find($student_group);
-        $gender_entity =  $this->getDoctrine()->getRepository(Gender::class)->find($gender_idd);
+        $gender_entity =  $this->getDoctrine()->getRepository(Gender::class)->find($gender_id);
 
         $parent_name = $parent_entity->getFullname();
         $class_name = $class_entity->getClassName();

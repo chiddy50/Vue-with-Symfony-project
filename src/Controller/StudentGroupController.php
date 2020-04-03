@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\StudentGroup;
+use App\Entity\StudentInfo;
 use App\Entity\Subjects;
 use DateTimeImmutable;
 use App\Repository\StudentGroupRepository;
@@ -159,7 +160,7 @@ class StudentGroupController extends AbstractController
      /**
      * @Route("/get-group-subjects", name="get_group_subjects", methods="POST")
      */
-    public function getGroupSubjects(Request $request, SubjectsRepository $subjectRepository)
+    public function getGroupSubjects(Request $request)
     {
         $group_id = $request->request->get('group_id');
         $subjects = $this->getDoctrine()->getRepository(Subjects::class)->getGroupSubjects($group_id);
@@ -184,6 +185,28 @@ class StudentGroupController extends AbstractController
         return new JsonResponse($data);
     }
 
+     /**
+     * @Route("/get-student-subjects", name="get_student_subjects", methods="POST")
+     */
+    public function getStudentsSubjects(Request $request)
+    {
+        $student_id = $request->request->get('id');
+
+        $student = $this->getDoctrine()->getRepository(StudentInfo::class)->find($student_id);
+        $firstname = $student->getFirstname();
+        $lastname = $student->getLastname();
+        $classes = $student->getClasses()->getId();
+        $section = $student->getSection()->getId();
+        $group_id = $student->getStudentGroup()->getId();
+
+        $subjects = $this->getDoctrine()->getRepository(Subjects::class)->getGroupSubjects($group_id);
+        $dataserializer = new DataSerializer;
+        
+        $return = ['error' => false, 'subjects' => $subjects, 'firstname' => $firstname, 'lastname' => $lastname, 'class_id' => $classes, 'section_id' => $section];
+        $groups = ['groups' => ['student_group:add', 'class:add', 'section:add']];
+        $data = $dataserializer->serializeData($return, $groups);
+        return new JsonResponse($data);
+    }
 
 
 

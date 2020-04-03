@@ -19,25 +19,25 @@ class StudentInfo
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("student:add")
+     * @Groups({"student:add", "exam_result:add"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=10, unique=true)
-     * @Groups("student:add")
+     * @Groups({"student:add", "exam_result:add"})
      */
     private $roll_no;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups("student:add")
+     * @Groups({"student:add", "exam_result:add"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=10)
-     * @Groups("student:add")
+     * @Groups({"student:add", "exam_result:add"})
      */
     private $lastname;
 
@@ -88,7 +88,7 @@ class StudentInfo
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Gender", inversedBy="students")
      * @ORM\JoinColumn(nullable=false)     
-     * @Groups({"gender:add", "student:add"})
+     * @Groups({"gender:add", "student:add", "exam_result:add"})
      */
     private $gender;
     

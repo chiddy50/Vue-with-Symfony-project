@@ -23,7 +23,7 @@ class Term
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"term:add", "exam:add"})
+     * @Groups({"term:add", "exam:add", "exam_result:add"})
      */
     private $term_code;
 

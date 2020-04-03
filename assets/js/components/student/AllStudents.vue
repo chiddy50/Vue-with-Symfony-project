@@ -304,8 +304,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 i.spinner-md{
     font-size: 30px;
 }

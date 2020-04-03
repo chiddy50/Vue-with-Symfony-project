@@ -16,13 +16,13 @@ class Classes
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"class:add", "exam:add", "student:add"})
+     * @Groups({"class:add", "exam:add", "student:add", "exam_result:add"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"class:add", "exam:add", "student:add"})
+     * @Groups({"class:add", "exam:add", "student:add", "exam_result:add"})
      */
     private $class_name;
 

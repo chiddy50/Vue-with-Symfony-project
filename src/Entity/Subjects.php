@@ -16,19 +16,19 @@ class Subjects
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"exam:add", "subject:add", "subject_result:add"})
+     * @Groups({"exam:add", "subject:add", "subject_result:add", "exam_result:add"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"exam:add", "subject:add", "subject_result:add"})
+     * @Groups({"exam:add", "subject:add", "subject_result:add", "exam_result:add"})
      */
     private $subject;
 
     /**
      * @ORM\Column(type="string", length=15)
-     * @Groups("subject:add")
+     * @Groups({"subject:add", "exam_result:add"})
      */
     private $subject_code;
 

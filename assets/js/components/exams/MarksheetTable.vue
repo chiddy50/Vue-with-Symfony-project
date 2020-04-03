@@ -1,19 +1,25 @@
 <template>
-    <div class="table-responsive result-table-box hide-table">
+    <div class="table-responsive result-table-box">
         <table class="table display data-table table-striped table-bordered text-nowrap">
             <thead>
                 <tr class="text-center">
-                    <th>Subject</th>
-                    <th>Grade</th>
-                    <th>Score</th>
-                    <th>Remark</th>
+                    <th>SUBJECT</th>
+                    <th>1ST C/A</th>
+                    <th>2ND C/A</th>
+                    <th>EXAM</th>
+                    <th>TOTAL</th>
+                    <th>GRADE</th>
+                    <th>REMARK</th>
                 </tr>
             </thead>
             <tbody>                            
                 <tr class="text-center" v-for="(result, index) in results" :key="index">
                     <td>{{ result.subject }}</td>                                     
+                    <td>{{ result.first_ca }}</td>                                     
+                    <td>{{ result.second_ca }}</td>                                     
+                    <td>{{ result.exam }}</td>                                     
+                    <td>{{ result.total }}</td>                                     
                     <td>{{ result.grade }}</td>                                     
-                    <td>{{ result.score }}</td>                                     
                     <td :class="commentClass(result.grade)">{{ result.comment }}</td>                                     
                 </tr>
             </tbody>

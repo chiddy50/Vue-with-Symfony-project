@@ -6,7 +6,7 @@
 
                 <div class="heading-layout1">
                     <div class="item-title">
-                        <h3 class="text-uppercase">{{ className }}({{ sectionName }})</h3>
+                        <h3 class="text-uppercase">{{ data.className }}({{ data.sectionName }})</h3>
                     </div>
                     
                 </div>
@@ -36,7 +36,8 @@
                                         <td>{{ student.roll_no }}</td>
                                         <td>{{ student.firstname }} {{ student.lastname }}</td>
                                         <td>
-                                            <router-link  :to="{ name: 'SingleMarksheet', params: { student } }" class="btn-own">Create MarkSheet</router-link>
+                                            <!-- <router-link  :to="{ name: 'SingleMarksheet', params: { student } }" class="btn-own">Create MarkSheet</router-link> -->
+                                            <router-link  :to="`/single-marksheet/${student.id}`" class="btn-own">Create MarkSheet</router-link>
                                         </td>
                                         <td>
                                             <router-link :to="`/edit-marksheet/${student.id}`" class="btn btn-lg shadow-dark-peel bg-success text-center rounded-bottom text-light">
@@ -56,12 +57,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 
 export default {
-    props: {
-        students: Array,
-        sectionName: String,
-        className: String
+    computed: {
+        ...mapState(['data', 'students']),
     }
 }
 </script>

@@ -30,7 +30,7 @@ class TakeSubjectResults
             $subject_entity = $em->getRepository(Subjects::class)->find($result['subject']);
             if($stmt->rowCount() === 1){
                 $single = $stmt->fetch();
-                dd($single);
+                // dd($single);
                 if (count($single)) {
                     $this->update($single['id'], $session_entity, $student_entity, $grade_entity, $subject_entity, $result['score'], $date, $term_entity, $em);
                 }else{                    

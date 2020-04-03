@@ -18,19 +18,19 @@ class Section
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"exam:add", "section:add", "student:add"})
+     * @Groups({"exam:add", "section:add", "student:add", "exam_result:add"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=10)
-     * @Groups({"exam:add", "section:add", "student:add"})
+     * @Groups({"exam:add", "section:add", "student:add", "exam_result:add"})
      */
     private $section_name;
 
     /**
      * @ORM\Column(type="string", length=7)
-     * @Groups({"section:add", "student:add"})
+     * @Groups({"section:add", "student:add", "exam_result:add"})
      */
     private $section_code;
 

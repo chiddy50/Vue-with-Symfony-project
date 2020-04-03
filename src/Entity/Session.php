@@ -17,13 +17,13 @@ class Session
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"session:add", "exam:add"})
+     * @Groups({"session:add", "exam:add", "exam_result:add"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=15)
-     * @Groups({"session:add", "exam:add"})
+     * @Groups({"session:add", "exam:add", "exam_result:add"})
      */
     private $session;
 

@@ -57,35 +57,6 @@ class SubjectResultController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/check-exam-records", name="check_exam_records", methods="POST")
-     */
-    public function checkExamRecord(Request $request)
-    {
-        $session = $request->request->get('session');
-        $term = $request->request->get('term');
-        $student_id = $request->request->get('student_id');
-        $em = $this->getDoctrine()->getManager();
-        $results = $em->getRepository(SubjectResult::class)->findBy(['session' => $session, 'term' => $term, 'student' => $student_id]);
-
-        $dataserializer = new DataSerializer;
-
-        if (!$results) {
-            $return = ['error' => true, 'message' => "No exam records"];
-            $data = $dataserializer->serializeWithoutGroup($return);
-            return new JsonResponse($data);
-            exit;
-        }
-
-        $student = $em->getRepository(StudentInfo::class)->find($student_id);
-        
-        // $record = new TakeSubjectResults();
-        // $allRecords = $record->checkExamRecords($results, $em);
-        $return = ['error' => false, 'records' => $results, 'firstname' => $student->getFirstname(), 'lastname' => $student->getLastname()];
-        $groups = ['groups' => ['subject_result:add']];
-        $data = $dataserializer->serializeData($return, $groups);
-        return new JsonResponse($data);
-    }
     
     /**
      * @Route("/update-exam-records", name="edit_exam_records", methods="POST")
@@ -128,5 +99,8 @@ class SubjectResultController extends AbstractController
         return new JsonResponse($data);
         
     }
+
+   
+   
     
 }

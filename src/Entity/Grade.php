@@ -15,37 +15,37 @@ class Grade
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("subject_result:add")
+     * @Groups({"subject_result:add", "exam_result:add"})
      */
     public $id;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups("subject_result:add")
+     * @Groups({"subject_result:add", "exam_result:add"})
      */
     public $grade;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("subject_result:add")
+     * @Groups({"subject_result:add", "exam_result:add"})
      */
     public $percent_from;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("subject_result:add")
+     * @Groups({"subject_result:add", "exam_result:add"})
      */
     public $percent_upto;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
-     * @Groups("subject_result:add")
+     * @Groups({"subject_result:add", "exam_result:add"})
      */
     public $comment;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups("subject_result:add")
+     * @Groups({"subject_result:add", "exam_result:add"})
      */
     public $description;
 

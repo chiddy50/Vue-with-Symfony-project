@@ -37,7 +37,7 @@ class Exam
     private $student_group;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Classes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Classes", inversedBy="exams")
      * @Groups("exam:add")
      */
     private $classes;

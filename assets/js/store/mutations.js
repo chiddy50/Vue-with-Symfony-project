@@ -1,7 +1,7 @@
 import Axios from 'axios';
 export default {
     getClasses(state){
-        // if(!state.classes.length){
+        if(!state.classes.length){
             state.classLoading = true;
             Axios.post('/all-classes')
             .then(response => {
@@ -24,7 +24,7 @@ export default {
             .finally(() => {
                 state.classLoading = false;
             });
-        // }
+        }
     },
         
     fetchSubjects(state){
@@ -82,7 +82,7 @@ export default {
         }
     },
     fetchSections(state){
-        // if(!state.sections.length){
+        if(!state.sections.length){
             state.sectionLoading = true;
             Axios.post('/all-section')
             .then(response => {
@@ -105,7 +105,7 @@ export default {
             .finally(() => {
                 state.sectionLoading = false;
             });            
-        // }
+        }
     },
     getParents(state){
         if(!state.parents.length){
@@ -367,6 +367,8 @@ export default {
                 });                    
             }else{
                 state.students = data.students;
+                state.data.className = data.class_name;
+                state.data.sectionName = data.section_name;
             }
                     
         })
@@ -374,8 +376,7 @@ export default {
         .finally(() => state.studentsLoading = false );
     },
 
-    fetchGroupSubject(state)
-    {
+    fetchGroupSubject(state){
         state.groupSubjectLoad = true;
         Axios.post('/allgroupsubjects')
         .then(res => {   

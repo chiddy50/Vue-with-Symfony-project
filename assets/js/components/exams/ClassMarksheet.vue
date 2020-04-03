@@ -15,14 +15,14 @@
                         <div class="row">
                             <div class="col-12-xxxl col-lg-6 col-12 form-group">
                                 <label>Choose Class</label>
-                                <select class="form-control" name="class_id">
+                                <select v-model="form.class_id" class="form-control" name="class_id">
                                     <option aria-placeholder="Choose Class" selected disabled>Choose Class</option>
                                     <option :value="myclass.id" v-for="myclass in classes" :key="myclass.id">{{ myclass.class_name }}</option>
                                 </select>
                             </div>
                             <div class="col-12-xxxl col-lg-6 col-12 form-group">
                                 <label>Choose Section</label>
-                                <select class="form-control" name="section_id">
+                                <select v-model="form.section_id" class="form-control" name="section_id">
                                     <option aria-placeholder="Choose Section" selected disabled>Choose Section</option>
                                     <option name="section_id" :value="section.id" v-for="section in sections" :key="section.id">{{ section.section_name }}</option>
                                 </select>
@@ -68,7 +68,7 @@
                             </div>
                             
                             <div class="col-2-xxxl col-xl-2 col-lg-3 col-12 form-group">
-                                <button type="submit" class="fw-btn-fill btn-gradient-yellow">RECORD</button>
+                                <button :disabled="recordLoad" type="submit" class="fw-btn-fill btn-gradient-yellow">RECORD</button>
                             </div>
                         </div>
                     
@@ -76,12 +76,15 @@
                             <table class="table display data-table table-striped table-bordered text-nowrap">
                                 <thead>
                                     <tr>                                    
-                                        <th></th>
-                                        <th colspan="5">
-                                            <select class="form-control select2">
+                                        <th class="text-center">
+                                            <i v-if="recordLoad" class="fas fa-spinner fa-spin text-danger spinner-md"></i>
+                                        </th>
+                                        <th colspan="2">
+                                            <select name="subject" class="form-control select2">
                                                 <option :value="subject.id" name="subject" v-for="(subject, index) in subjects" :key="index">{{ subject.subject }}</option>
                                             </select>                                    
-                                        </th>                                    
+                                        </th> 
+                                        <th colspan="3"></th>                                   
                                     </tr>
                                     <tr>                                    
                                         <th>STUDENT NAME</th>
@@ -102,7 +105,7 @@
                                             <input type="number" :name="'second_ca['+[student.id]+']'" placeholder="2nd C/A.." class="form-control">
                                         </td>
                                         <td>
-                                            <input type="number" :name="'score['+[student.id]+']'" placeholder="Score.." class="form-control">
+                                            <input type="number" :name="'exam['+[student.id]+']'" placeholder="Exam.." class="form-control">
                                         </td>
                                         <td>
                                             <input type="number" :name="'total['+[student.id]+']'" placeholder="Total.." class="form-control">
@@ -147,12 +150,18 @@
 <script>
 import Header from '../inc/Header.vue';
 import { mapState, mapActions } from 'vuex';
+import Swal from 'sweetalert2';
+import Axios from 'axios';
 
 export default {
     name: 'ClassMarksheet',
     data(){
         return {
-            
+            recordLoad: false,
+            form: {
+                class_id: null,
+                section_id: null
+            }
         }
     },
     components:{
@@ -173,7 +182,36 @@ export default {
         ...mapActions(['getGrades', 'getSessions', 'getTerms', 'fetchSubjects', 'getClasses', 'fetchSections', 'searchStudent']),
 
         processResults(e){
-
+            this.recordLoad = true
+            let fd = new FormData(e.target)
+            Object.entries(this.$data.form).forEach(val => {
+                fd.append(val[0], val[1]);
+            });
+            Axios.post('/record-class-results', fd)
+            .then(res => {
+                this.recordLoad = false
+                let data = JSON.parse(res.data)
+                console.log(data);
+                if (data.error) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }else{
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: "Successfully Recorded",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }             
+            })
+            .catch(err => console.error(err))
+            .finally(() => this.recordLoad = false )
         }
     }
 }
