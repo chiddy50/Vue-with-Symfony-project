@@ -96,6 +96,11 @@ class StudentInfo
      * @ORM\OneToMany(targetEntity="App\Entity\StudentAttendance", mappedBy="students")     
      */
     private $attendance;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ClassAttendance", mappedBy="student")
+     */
+    private $class_attendance;
     
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -108,10 +113,7 @@ class StudentInfo
      */
     private $entryDate;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ClassAttendance", mappedBy="student")
-     */
-    private $class_attendance;
+    
     
 
     // public function __construct()
@@ -160,6 +162,11 @@ class StudentInfo
         $this->lastname = $lastname;
 
         return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->firstname.' '.$this->lastname;
     }
 
     public function getAdmissionDate(): ?\DateTimeInterface

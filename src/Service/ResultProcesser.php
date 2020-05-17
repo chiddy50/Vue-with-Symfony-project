@@ -54,7 +54,7 @@ class ResultProcesser
         $examResult = new ExamResult();
         $examResult->setGrade($grade);
         $examResult->setStudent($student);
-        $examResult->setTotal(intval($total));
+        $examResult->setTotal(intval($first_ca + $second_ca + $exam));
         $examResult->setExam($exam);
         $examResult->setSubject($subject);
         $examResult->setSession($session);
@@ -75,7 +75,7 @@ class ResultProcesser
         $examResult = $em->getRepository(ExamResult::class)->find($id);
         $examResult->setGrade($grade);
         $examResult->setStudent($student);
-        $examResult->setTotal(intval($total));
+        $examResult->setTotal(intval($first_ca + $second_ca + $exam));
         $examResult->setExam($exam);
         $examResult->setSubject($subject);
         $examResult->setSession($session);

@@ -138,23 +138,21 @@ export default {
         ...mapActions(['getParents', 'getGender', 'getClasses', 'fetchSections', 'getGroups']),
        
         editStudent(){
-            this.editLoading = true
-            let formData = new FormData()
+            this.editLoading = true;
+            let formData = new FormData();
             let data = this.$data.form;
             Object.entries(data).forEach(function(val) {
                 formData.append(val[0], val[1]);
             }); 
             Axios.post('/edit-student', formData)
             .then(response => {
-                this.editLoading = false
+                this.editLoading = false;
                 let data = response.data;
                 if (data.error === false) {                         
-                    this.$router.push('/students')
+                    this.$router.push('/students');
                 }                
             })
-            .catch(err => {
-                console.error(err)                
-            })
+            .catch(err => console.error(err) )
             .finally(() => this.editLoading = false)
         },
         fillForm(){
@@ -173,7 +171,7 @@ export default {
         },
         formatter(date) {
             return moment(date).format('MMMM-Do-YYYY');
-        },
+        }, 
     }
 }
 </script>

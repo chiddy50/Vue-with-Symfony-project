@@ -11,8 +11,7 @@
                             <h3>Add New Students</h3>
                         </div>                        
                     </div>
-                    
-            
+
                     <form class="new-added-form" data-select2-id="18" @submit.prevent="addStudent">
                         <div class="row">
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
@@ -30,18 +29,17 @@
                                     <option :value="gender.id" v-for="gender in genders" :key="gender.id">
                                         {{ gender.gender }}
                                     </option>
-                                </select>
-                                
+                                </select>                                
                             </div>
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
                                 <label>Date Of Birth *</label>
                                 <input type="date" v-model="form.dob" class="form-control rounded-0">
-
                             </div>
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
                                 <label>Roll</label>
-                                <input type="text" v-model="form.roll_no" placeholder="" class="form-control rounded-0">
-                                <button class="btn btn-info btn-sm" @click="generate">Generate</button>
+                                <input type="text" v-model="form.roll_no" @keyup="generate" class="form-control rounded-0">
+                                <span class="text-success sm-font" v-show="rollAvailable">Available</span>
+                                <span class="text-danger sm-font" v-show="rollNone">This Number is taken</span>
                             </div>
                             <div class="col-xl-3 col-lg-6 col-12 form-group">
                                 <label>Student Group *</label>
@@ -129,7 +127,9 @@ export default {
                 section_id: ''
             },
             studentLoad: false,
-            show: true
+            show: true,
+            rollAvailable: false,
+            rollNone: false
         }
     },
     mounted(){
@@ -152,29 +152,56 @@ export default {
                 formData.append(val[0], val[1]);
             });
 
-            Axios.post('/student/create', formData)
-            .then(response => {
-                console.log(response);
-                let data = response.data;
-                if (data.error == true) {
-                    $('#msg').text(data.message);
-                    $('#error').slideDown(500);
-                    setTimeout(() => {  
-                        $('#error').slideUp(500);
-                    }, 5000);
-                    return;
-                }
-                this.$router.push('students')
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            .finally(() => {
-                this.studentLoad = false
-            });
+            if (!this.rollNone) {
+                Axios.post('/student/create', formData)
+                .then(response => {
+                    console.log(response);
+                    let data = response.data;
+                    if (data.error == true) {
+                        $('#msg').text(data.message);
+                        $('#error').slideDown(500);
+                        setTimeout(() => {  
+                            $('#error').slideUp(500);
+                        }, 5000);
+                        return;
+                    }
+                    this.$router.push('students')
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+                .finally(() => {
+                    this.studentLoad = false
+                });
+            }else{
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "This Roll No is unavailable",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         },
         generate(){
-            
+            let self = this;
+            let formData = new FormData()
+            formData.append('roll_no', this.form.roll_no)
+            Axios.post("/generate-number", formData)
+            .then(response => {
+                let data = JSON.parse(response.data)
+                if (!data.students.length) {
+                    self.rollAvailable = true;
+                    self.rollNone = false;
+                }else{
+                    self.rollAvailable = false;
+                    self.rollNone = true;
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            })
+            // .finally(() => this.$store.state.studentsLoading = false )
         }
     }
 }
@@ -193,5 +220,9 @@ export default {
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(10px);
   opacity: 0;
+}
+
+.sm-font{
+    font-size: 13px;
 }
 </style>

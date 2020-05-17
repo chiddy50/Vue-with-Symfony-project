@@ -13,25 +13,25 @@
 
         <div class="row">            
             <!-- Contains students data -->
-            <ProfileBox :singleStudent="student" v-if="student" :doa="admission_date" :dob="dob" :dateLoading="dateLoading"/>
+            <Profile :singleStudent="student" v-if="student" :doa="admission_date" :dob="dob" :dateLoading="dateLoading"/>
 
             <div class="col-8-xxxl col-12">               
-                <div class="row">
+                <!-- <div class="row">
                     <CheckSingleAttendance :student_id="student_id"/>                    
                     <SubjectTable :studentSubject="studentSubject" :firstname="student.firstname"
                      :lastname="student.lastname"/>                                        
-                </div>
+                </div> -->
                 <div class="row">
                     <div v-if="showError" class="col-8-xxxl col-12 error-box">
                         <h4 class="text-center">{{ student.firstname }} {{ student.lastname }} has no subjects</h4>
                     </div>
                 </div>
                 <div class="row">
-                    <CheckMonthAttendance :student_id="student_id"/>
+                    <MonthlyAttendance :student_id="student_id"/>
                 </div>
 
                 <div class="row">
-                    <CheckExamSheet :student_id="student_id"/>
+                    <ExamRecord :student_id="student_id"/>
                 </div>
             </div>
         </div>
@@ -43,21 +43,20 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import Axios from 'axios';
 import SubjectTable from './component/SubjectTable.vue';
-import ProfileBox from './component/ProfileBox.vue';
+import Profile from './component/ProfileBox.vue';
 import CheckSingleAttendance from './component/CheckSingleAttendance.vue';
-import CheckMonthAttendance from './component/CheckMonthAttendance.vue';
-import CheckExamSheet from './component/CheckExamSheet.vue';
+import MonthlyAttendance from './component/CheckMonthAttendance.vue';
+import ExamRecord from './component/CheckExamSheet.vue';
 import moment from 'moment';
-
 
 export default {
     name:'SingleStudent',
     components:{
         SubjectTable, 
-        ProfileBox, 
+        Profile, 
         CheckSingleAttendance,
-        CheckMonthAttendance,
-        CheckExamSheet
+        MonthlyAttendance,
+        ExamRecord
     },
     props: {
         student: Object
@@ -111,8 +110,6 @@ export default {
             })
             .finally(() => this.studentSubjectLoad = false )
         },
-    
-
 	}
 }
 </script>

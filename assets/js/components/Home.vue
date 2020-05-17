@@ -124,7 +124,7 @@ import Axios from 'axios';
 
 export default {
     name: 'Home',
-    mounted(){
+    beforeMount(){
         this.countAll()
     },
     computed:{
@@ -136,9 +136,7 @@ export default {
             'femaleCount'])
     },
     methods: {
-        ...mapActions(['countAll']),
-        
-        
+        ...mapActions(['countAll']),        
     }
 
 }

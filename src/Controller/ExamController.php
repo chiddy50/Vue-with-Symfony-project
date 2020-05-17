@@ -25,7 +25,7 @@ class ExamController extends AbstractController
      * @Route("/exam/new", name="new_exam", methods="POST")
      */
     public function create(Request $request)
-    {           
+    {
         $exam_name = $request->request->get('exam_name');
         $subject = $request->request->get('subject');
         $class = $request->request->get('class');
@@ -38,20 +38,20 @@ class ExamController extends AbstractController
 
         $dataserializer = new DataSerializer;
 
-        if(empty($exam_name)){
+        if (empty($exam_name)) {
             $return = ['error' => true, 'message' => 'All fields cannot be empty'];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit; 
+            exit;
         }
-        
+
         $subjectEntity = $this->getDoctrine()->getRepository(Subjects::class)->find($subject);
         $sectionEntity = $this->getDoctrine()->getRepository(Section::class)->find($section);
         $classEntity = $this->getDoctrine()->getRepository(Classes::class)->find($class);
         $studentGroupEntity = $this->getDoctrine()->getRepository(StudentGroup::class)->find($group);
         $sessionEntity = $this->getDoctrine()->getRepository(Session::class)->find($session);
         $termEntity = $this->getDoctrine()->getRepository(Term::class)->find($term);
-        
+
         $em = $this->getDoctrine()->getManager();
         $exam = new Exam;
 
@@ -67,19 +67,19 @@ class ExamController extends AbstractController
 
         $em->persist($exam);
         $em->flush();
-        
+
         $return = ['error' => false, 'exam' => $exam];
         $groups = ['groups' => ['exam:add']];
         $data = $dataserializer->serializeData($return, $groups);
-        
+
         return new JsonResponse($data);
-        
     }
 
     /**
      * @Route("/examinations", name="all_exams", methods="POST")
      */
-    public function getAllExams(){
+    public function getAllExams()
+    {
         $exams = $this->getDoctrine()->getRepository(Exam::class)->findAll();
         $count = count($exams);
         $dataserializer = new DataSerializer;
@@ -104,11 +104,11 @@ class ExamController extends AbstractController
         $name = $request->request->get('name');
         $exams = $this->getDoctrine()->getRepository(Exam::class)->liveSearch($name);
         $dataserializer = new DataSerializer;
-        if($name === ''){
+        if ($name === '') {
             $return = ['error' => false, 'exams' => []];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit; 
+            exit;
         }
 
         $return = ['error' => false, 'exams' => $exams];
@@ -130,11 +130,11 @@ class ExamController extends AbstractController
         $student_group = $request->request->get('student_group');
         $exams = $this->getDoctrine()->getRepository(Exam::class)->examSearch($subject, $session, $term, $class, $section, $student_group);
         $dataserializer = new DataSerializer;
-        if(empty($subject) && empty($session) && empty($term) && empty($class) && empty($section) && empty($student_group)){
+        if (empty($subject) or empty($session) or empty($term) or empty($class) or empty($section) or empty($student_group)) {
             $return = ['error' => true, 'message' => 'All fields cannot be empty'];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit; 
+            exit;
         }
 
         $return = ['error' => false, 'exams' => $exams];
@@ -142,6 +142,4 @@ class ExamController extends AbstractController
         $data = $dataserializer->serializeData($return, $groups);
         return new JsonResponse($data);
     }
-
-
-} 
+}

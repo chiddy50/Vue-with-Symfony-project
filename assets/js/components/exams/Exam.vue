@@ -2,7 +2,7 @@
     <div class="row">
         <Header :title="'Exams'" :title2="'Add Exam Schedule'"/>
 
-        <div class="col-4-xxxl col-12">
+        <div class="col-12-xxxl col-12">
             <div class="card height-auto">
                 <div class="card-body">
                     <div class="heading-layout1">
@@ -12,58 +12,58 @@
                     </div>
                     <form @submit.prevent="addExam($event)" class="new-added-form">
                         <div class="row">
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-6 col-12 form-group">
                                 <label>Exam Name</label>
                                 <input type="text" name="exam_name" class="form-control">
                             </div>
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-6 col-12 form-group">
                                 <label>Subject Type *</label>
                                 <select name="subject" class="form-control select2 rounded-0">
                                     <option value="">Please Select Subject</option>
                                     <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.subject }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-4 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-4 col-12 form-group">
                                 <label>Class *</label>
                                 <select name="class" class="form-control select2 rounded-0">
                                     <option value="">Please Select Class</option>
                                     <option v-for="cl in classes" :key="cl.id" :value="cl.id">{{ cl.class_name }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-4 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-4 col-12 form-group">
                                 <label>Section</label>
                                 <select name="section" class="form-control select2 rounded-0">
                                     <option value="">Please Select Section</option>
                                     <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.section_name }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-4 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-4 col-12 form-group">
                                 <label>Group</label>
                                 <select name="group" class="form-control select2 rounded-0">
                                     <option value="">Please Select Group</option>
                                     <option v-for="group in student_group" :key="group.id" :value="group.id">{{ group.group_name }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-6 col-12 form-group">
                                 <label>Session</label>
                                 <select name="session" class="form-control select2 rounded-0">
                                     <option value="">Please Select Session</option>
                                     <option v-for="session in sessions" :key="session.id" :value="session.id">{{ session.session }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-6 col-12 form-group">
                                 <label>Term</label>
                                 <select name="term" class="form-control select2 rounded-0">
                                     <option value="">Please Select Term</option>
                                     <option v-for="term in terms" :key="term.id" :value="term.id">{{ term.term_code }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-6 col-12 form-group">
                                 <label>Select Time</label>
                                 <input type="text" name="time" class="form-control" placeholder="e.g 10.00 am - 11.00 am">
                                 <i class="far fa-clock"></i>
                             </div>
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-3-xxxl col-lg-6 col-12 form-group">
                                 <label>Select Date</label>
                                 <input type="date" name="date" class="form-control">
                             </div>
@@ -76,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-8-xxxl col-12">
+        <div class="col-12-xxxl col-12">
             <div class="card height-auto">
                 <div class="card-body">
                     <div class="heading-layout1">
@@ -180,7 +180,7 @@
                 </div>
             </div>
         </div>
-        <button @click="getExams">Test</button>
+        <button @click="test">Test</button>
     </div>
 </template>
 
@@ -278,6 +278,17 @@ export default {
         },
         setDate(date){
             return moment(date).format('MMMM Do YYYY');
+        },
+        test(){
+            let formData = new FormData()
+            formData.append('id', 2)
+
+            Axios.post("/studentinfo", formData)
+            .then(response => {
+                console.log(response);                
+                // let data = JSON.parse(response.data)                
+            })
+            .catch(err => console.error(err) )
         }
     }
 }

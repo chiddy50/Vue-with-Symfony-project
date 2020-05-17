@@ -81,9 +81,9 @@ class TermController extends AbstractController
     public function edit(Request $request)
     {   
         $id = $request->request->get('id');
-        $term_code = $request->request->get('term_code');
-        $term_description = $request->request->get('term_description');
-
+        $term_code = $request->request->get('code');
+        $term_description = $request->request->get('description');
+        
         $dataserializer = new DataSerializer;
         if (!$term_code || !$term_description) {            
             $return = ['error' => true, 'message' => 'Fill all fields'];

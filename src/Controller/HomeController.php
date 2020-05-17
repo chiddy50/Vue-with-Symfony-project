@@ -27,7 +27,7 @@ class HomeController extends AbstractController
      * @Route("/genders", name="all_class", methods="POST")
      */
     public function getGenders()
-    {   
+    {
         $genders = $this->getDoctrine()->getRepository(Gender::class)->findAll();
         if (!$genders) {
             $return = ['error' => true, 'message' => "No gender found"];
@@ -48,7 +48,7 @@ class HomeController extends AbstractController
      * @Route("/months", name="all_month", methods="POST")
      */
     public function getMonths()
-    {   
+    {
         $months = $this->getDoctrine()->getRepository(Month::class)->findAll();
         if (!$months) {
             $return = ['error' => true, 'message' => "No month found"];
@@ -69,7 +69,7 @@ class HomeController extends AbstractController
      * @Route("/sessions", name="all_session", methods="POST")
      */
     public function getSessions()
-    {   
+    {
         $sessions = $this->getDoctrine()->getRepository(Session::class)->findAll();
         $return = [];
         if (!$sessions) {
@@ -90,7 +90,8 @@ class HomeController extends AbstractController
     /**
      * @Route("/gendercount", name="student_gender", methods="POST")
      */
-    public function selectGender(StudentInfoRepository $studentRepo){
+    public function selectGender(StudentInfoRepository $studentRepo)
+    {
         $males = $this->getDoctrine()->getRepository(Gender::class)->findOneBy(['gender' => 'male']);
         $females = $this->getDoctrine()->getRepository(Gender::class)->findOneBy(['gender' => 'female']);
 
@@ -99,7 +100,4 @@ class HomeController extends AbstractController
 
         return new JsonResponse(['male_count' => count($male_count), 'female_count' => count($female_count)]);
     }
-
-    
-    
 }

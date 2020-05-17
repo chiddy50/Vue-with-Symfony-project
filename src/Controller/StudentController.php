@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\StudentInfoRepository;
-use App\Repository\SubjectsRepository;
 use App\Service\DataSerializer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,7 +21,7 @@ class StudentController extends AbstractController
 {
     /**
      * @Route("/allstudents", name="all_students", methods="POST")
-     */ 
+     */
     public function all(StudentInfoRepository $strepo)
     {
         $students = $this->getDoctrine()->getRepository(StudentInfo::class)->findAll();
@@ -32,7 +31,7 @@ class StudentController extends AbstractController
             $return = ['error' => true, 'message' => "No student found"];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit;         
+            exit;
         }
 
 
@@ -43,14 +42,14 @@ class StudentController extends AbstractController
     }
 
     /**
-    * @Route("/student/create", name="new_student", methods="POST")
-    */
+     * @Route("/student/create", name="new_student", methods="POST")
+     */
     public function create(Request $request, StudentInfoRepository $studentRepository)
     {
-        
+
         $em = $this->getDoctrine()->getManager();
         $student = new StudentInfo;
-    
+
         $firstname = $request->request->get('firstname');
         $lastname = $request->request->get('lastname');
         $email = $request->request->get('email');
@@ -65,14 +64,14 @@ class StudentController extends AbstractController
 
         $stmt = $studentRepository->findIfRollExists($roll_no);
 
-        if($stmt->rowCount() == 1){
+        if ($stmt->rowCount() == 1) {
             $message = "This Roll No exists already.";
             $error = true;
             $return = ['error' => $error, 'message' => $message];
             return new JsonResponse($return);
             exit;
         }
-    
+
         $classEntity = $this->getDoctrine()->getRepository(Classes::class)->find($class_id);
         $sectionEntity = $this->getDoctrine()->getRepository(Section::class)->find($section_id);
         $parentEntity = $this->getDoctrine()->getRepository(Parents::class)->find($parent_id);
@@ -93,75 +92,31 @@ class StudentController extends AbstractController
 
         $result = [];
         $em->persist($student);
-    
+
         $em->flush();
         $error = false;
         $message = "Inserted successfully";
         $result = ['error' => $error, 'message' => $message];
         return new JsonResponse($result);
-        
     }
 
     /**
-     * @Route("/studentinfo", name="student_info", methods="POST")
+     * @Route("/student-info", name="student_info", methods="POST")
      */
-    public function studentInfo(Request $request, SubjectsRepository $subjectRepository)
+    public function studentInfo(Request $request)
     {
-
         $student_id = $request->request->get('id');
         $em = $this->getDoctrine()->getManager();
         $student = $em->getRepository(StudentInfo::class)->find($student_id);
 
-        $result = [];
+        $dataserializer = new DataSerializer;
+        $return = ['error' => false, 'student' => $student];
+        $groups = ['groups' => ['student:add']];
+        $data = $dataserializer->serializeData($return, $groups);
 
-        $id = $student->getStudentGroup();
-        $firstname = $student->getFirstname();
-        $lastname = $student->getLastname();
-        $email = $student->getEmail();
-        $roll_no = $student->getRollNo();
-        $dob = $student->getDob();
-        $gender_id = $student->getGender();
-        $admission_date = $student->getAdmissionDate();
-        $parent_id = $student->getParent();
-        $class_id = $student->getClasses();
-        $student_group_id = $student->getStudentGroup();
-        $section_id = $student->getSection();
-
-        $parent_entity = $em->getRepository(Parents::class)->find($parent_id);
-        $class_entity = $em->getRepository(Classes::class)->find($class_id);
-        $student_group_entity = $em->getRepository(StudentGroup::class)->find($student_group_id);
-        $section_entity = $em->getRepository(Section::class)->find($section_id);
-        $gender_entity = $em->getRepository(Gender::class)->find($gender_id);
-
-        $parent_name = $parent_entity->getFullname();
-        $class_name = $class_entity->getClassName();
-        $section_name = $section_entity->getSectionName();
-        $student_group_name = $student_group_entity->getGroupName();
-        $gender = $gender_entity->getGender();
-        
-        $error = false;
-        $message = 'Successfully retrieved';
-        $result = [
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-            'fullname' => $firstname.' '.$lastname,
-            'email' => $email,
-            'roll_no' => $roll_no,
-            'dob' => $dob,
-            'gender' => $gender,
-            'admission_date' => $admission_date,
-            'parent' => $parent_name,
-            'class_name' => $class_name,
-            'section' => $section_name,
-            'group_name' => $student_group_name,
-            'group_id' => $student_group_entity->getId(),
-            'error' => $error,
-            'message' => $message,
-            'id' => $student_id,
-        ];
-        return new JsonResponse($result);
+        return new JsonResponse($data);
     }
-    
+
     /**
      * @Route("/getstudentid", name="get_id_for_edit", methods="POST")
      */
@@ -170,16 +125,8 @@ class StudentController extends AbstractController
         $student_id = $request->request->get('id');
 
         $student = new StudentInfo;
-
         $student = $this->getDoctrine()->getRepository(StudentInfo::class)->find($student_id);
 
-        $id = $student->getId();
-        $firstname = $student->getFirstname();
-        $lastname = $student->getLastname();
-        $email = $student->getEmail();
-        $roll_no = $student->getRollNo();
-        $dob = $student->getDob();
-        $admission_date = $student->getAdmissionDate();
         $gender_id = $student->getGender();
         $parent = $student->getParent();
         $classes = $student->getClasses();
@@ -192,36 +139,24 @@ class StudentController extends AbstractController
         $group_entity = $this->getDoctrine()->getRepository(StudentGroup::class)->find($student_group);
         $gender_entity =  $this->getDoctrine()->getRepository(Gender::class)->find($gender_id);
 
-        $parent_name = $parent_entity->getFullname();
-        $class_name = $class_entity->getClassName();
-        $section_name = $section_entity->getSectionName();
-        $group_name = $group_entity->getGroupName();
-        $gender = $gender_entity->getGender();
-
-        $parent_id = $parent_entity->getId();
-        $class_id = $class_entity->getId();
-        $section_id = $section_entity->getId();
-        $group_id = $group_entity->getId();
-        $gender_id = $gender_entity->getId();
-
         return new JsonResponse([
-            'id' => $id, 
-            'firstname' => $firstname,
-            'lastname' => $lastname, 
-            'email' => $email, 
-            'dob' => $dob, 
-            'admission_date' => $admission_date, 
-            'gender' => $gender, 
-            'roll_no' => $roll_no,
-            'parent_name' => $parent_name, 
-            'parent_id' => $parent_id, 
-            'class_name' => $class_name, 
-            'class_id' => $class_id,
-            'section_name' => $section_name, 
-            'section_id' => $section_id,
-            'group_name' => $group_name,
-            'group_id' => $group_id,
-            'gender_id' => $gender_id
+            'id' => $student->getId(),
+            'firstname' => $student->getFirstname(),
+            'lastname' => $student->getLastname(),
+            'email' => $student->getEmail(),
+            'dob' => $student->getDob(),
+            'admission_date' => $student->getAdmissionDate(),
+            'gender' => $gender_entity->getGender(),
+            'roll_no' => $student->getRollNo(),
+            'parent_name' => $parent_entity->getFullname(),
+            'class_name' => $class_entity->getClassName(),
+            'section_name' => $section_entity->getSectionName(),
+            'group_name' => $group_entity->getGroupName(),
+            'parent_id' => $parent_entity->getId(),
+            'class_id' => $class_entity->getId(),
+            'section_id' => $section_entity->getId(),
+            'group_id' => $group_entity->getId(),
+            'gender_id' => $gender_entity->getId()
         ]);
     }
 
@@ -246,8 +181,7 @@ class StudentController extends AbstractController
 
         $dateDob = strstr($dob, " (", true);
         $dateDoa = strstr($admission_date, " (", true);
-        // dump($dateDob);
-        // exit;
+
 
         $classEntity = $this->getDoctrine()->getRepository(Classes::class)->find($class_id);
         $sectionEntity = $this->getDoctrine()->getRepository(Section::class)->find($section_id);
@@ -273,37 +207,39 @@ class StudentController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $message = "Well done! You successfully edited ".$firstname.' '.$lastname;
+        $message = "Well done! You successfully edited " . $firstname . ' ' . $lastname;
         return new JsonResponse(['error' => false, 'message' => $message]);
     }
-    
+
     /**
      * @Route("/deletestudent", name="delete_student", methods="POST")
      */
-    public function delete(Request $request, StudentInfoRepository $repo){
-        
+    public function delete(Request $request, StudentInfoRepository $repo)
+    {
+
         $student_id = $request->request->get('id');
         // $student = $this->getDoctrine()->getRepository(StudentInfo::class)->find($student_id);
         $repo->removeStudent($student_id);
         // if (!$student) {
         //     return new JsonResponse(['error' => false, 'message' => 'Error']);
         // }
-        
+
         // $em = $this->getDoctrine()->getManager();
         // $em->remove($student);
         // $em->flush();
-        return new JsonResponse(['error' => true, 'message' => 'Deleted', ]);
+        return new JsonResponse(['error' => true, 'message' => 'Deleted',]);
     }
 
 
     /**
      * @Route("/countstudents", name="student_count", methods="POST")
      */
-    public function studentCount(StudentInfoRepository $studentRepo){
+    public function studentCount(StudentInfoRepository $studentRepo)
+    {
         $count = $studentRepo->studentCount();
         return new JsonResponse(['count' => $count]);
     }
-    
+
     /**
      * @Route("/searchstudent", name="student_search", methods="POST")
      */
@@ -312,28 +248,28 @@ class StudentController extends AbstractController
         $class_id = $request->request->get('class_id');
         $section_id = $request->request->get('section_id');
         $student_group = $request->request->get('student_group');
-        
+
         $dataserializer = new DataSerializer;
 
-        if(empty($class_id) or empty($section_id)){
+        if (empty($class_id) or empty($section_id)) {
             $return = ['error' => true, 'message' => "Provide a class and section"];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit; 
+            exit;
         }
 
         $students = $this->getDoctrine()->getRepository(StudentInfo::class)->findBy(['section' => $section_id, "classes" => $class_id]);
-        
+
         if (!$students) {
             $return = ['error' => true, 'message' => "No student found"];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit;         
+            exit;
         }
         $subjects = '';
         //Get subjects 
-        if(!empty($student_group)){
-            $subjects = $this->getDoctrine()->getRepository(Subjects::class)->getStudentSubjects($student_group);
+        if (!empty($student_group)) {
+            $subjects = $this->getDoctrine()->getRepository(Subjects::class)->getGroupSubjects($student_group);
         }
 
         $classes = $this->getDoctrine()->getRepository(Classes::class)->find($class_id);
@@ -341,7 +277,13 @@ class StudentController extends AbstractController
         $class_name = $classes->getClassName();
         $section_name = $sections->getSectionName();
 
-        $return = ['error' => false, 'students' => $students, 'class_name' => $class_name, 'section_name' => $section_name, 'subjects' => $subjects];
+        $return = [
+            'error' => false, 
+            'students' => $students, 
+            'class_name' => $class_name, 
+            'section_name' => $section_name, 
+            'subjects' => $subjects
+        ];
         $groups = ['groups' => ['student:add']];
         $data = $dataserializer->serializeData($return, $groups);
         return new JsonResponse($data);
@@ -355,11 +297,11 @@ class StudentController extends AbstractController
         $name = $request->request->get('name');
         $students = $this->getDoctrine()->getRepository(StudentInfo::class)->liveSearch($name);
         $dataserializer = new DataSerializer;
-        if($name === ''){
+        if ($name === '') {
             $return = ['error' => false, 'students' => []];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
-            exit; 
+            exit;
         }
 
         $return = ['error' => false, 'students' => $students];
@@ -368,6 +310,26 @@ class StudentController extends AbstractController
         return new JsonResponse($data);
     }
 
-    
+    /**
+     * @Route("/generate-number", name="live_search")
+     */
+    public function generateNumber(Request $request)
+    {
+        $roll_no = $request->request->get('roll_no');
+        $number = $this->getDoctrine()->getRepository(StudentInfo::class)->generateNumber($roll_no);
+
+
+        $dataserializer = new DataSerializer;
+        if ($roll_no === '') {
+            $return = ['error' => false, 'students' => []];
+            $data = $dataserializer->serializeWithoutGroup($return);
+            return new JsonResponse($data);
+            exit;
+        }
+        $return = ['error' => false, 'students' => $number];
+        $groups = ['groups' => ['student:add']];
+        $data = $dataserializer->serializeData($return, $groups);
+        return new JsonResponse($data);
+    }
     
 }

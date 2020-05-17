@@ -224,25 +224,12 @@ export default {
         this.getGroups()
     },
     computed:{
-    ...mapState(['sections', 
-                 'classes', 
-                 'parents', 
-                 'student_group', 
-                 'genders', 
-                 'students', 
-                 'studentsLoading',
-                 'search'
-                 ]),
-  
+    ...mapState(['sections', 'classes', 'parents', 'student_group', 'genders', 'students', 'studentsLoading', 'search']),
     },
     methods:{
-        ...mapActions([                         
-                        'fetchSections', 
-                        'spliceStudent', 
-                        'getGender',
-                        'getClasses',
-                        'searchStudent',
-                        'getGroups',
+        ...mapActions([ 'fetchSections', 'spliceStudent', 
+                        'getGender', 'getClasses',
+                        'searchStudent', 'getGroups',
                         'getParents'
                         ]),
         

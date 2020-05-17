@@ -34,10 +34,8 @@ class StudentInfoRepository extends ServiceEntityRepository
     }
 
     public function findIfRollExists($roll_no){
-        $conn = $this->getEntityManager()->getConnection();
-        
+        $conn = $this->getEntityManager()->getConnection();        
         $sql = "SELECT id FROM student_info WHERE roll_no = :roll_no";
-
         $stmt = $conn->prepare($sql);
         $stmt->execute(['roll_no' => $roll_no]);
 
@@ -86,7 +84,9 @@ class StudentInfoRepository extends ServiceEntityRepository
         return $count;
     }   
 
- 
+    /**
+     * @return StudentInfo[]
+     */
     public function liveSearch($name)
     {
         // $qb = $this->getEntityManager();
@@ -110,6 +110,19 @@ class StudentInfoRepository extends ServiceEntityRepository
         // returns an array of Product objects
         return $query->getResult();
 
+    }
+
+    public function generateNumber($roll_no){
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT s
+            FROM App\Entity\StudentInfo s
+            WHERE s.roll_no LIKE :name'            
+        )->setParameter('name', '%'.$roll_no.'%');
+        
+        // returns an array of Product objects
+        return $query->getResult();
     }
 
     public function removeStudent($id){

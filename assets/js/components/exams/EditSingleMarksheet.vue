@@ -16,9 +16,10 @@
             <div class="card dashboard-card-eleven">
                 <div class="card-body">
 
-                    <div class="heading-layout1">
+                    <div class="heading-layout1" v-if="firstname">
                         <div class="item-title">
-                            <h3 class="text-uppercase">{{ firstname }} {{ lastname }}</h3>
+                            <i v-if="infoLoad" class="fas fa-spinner fa-spin text-danger"></i>                            
+                            <h3 v-else class="text-capitalize">Name: {{ firstname }} {{ lastname }}</h3>
                         </div>                        
                     </div>
 
@@ -41,7 +42,7 @@
                                         </option>                                        
                                     </select>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-12 col-12 form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-12 form-group" v-show="showDate">
                                     <datepicker :format="formatter" :bootstrap-styling="true" :value="form.date" v-model="form.date" name="date"></datepicker>                                
                                 </div>
                                 <div class="col-1-xxxl col-xl-2 col-lg-3 col-md-3 col-12 form-group">
@@ -95,17 +96,19 @@
                                                 <input type="text" :placeholder="record.grade.comment" disabled class="form-control">
                                             </td>                                                                                   
                                             <td class="text-center">
-                                                <button @click.prevent="deleteExamResult(record.id)" class="btn btn-lg shadow-dark-peel bg-danger rounded-bottom text-light text-center">
-                                                <i class="fas fa-trash text-light"></i>
+                                                <button @click.prevent="deleteExamResult(record.id)" 
+                                                class="btn btn-lg shadow-dark-peel bg-danger rounded-bottom text-light text-center">
+                                                    <i class="fas fa-trash text-light"></i>
                                                 </button>
                                             </td>                              
                                         </tr>
                                     </tbody>
                                 </table>
-                                <button type="submit" :disabled="!records.length" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark rounded-0">
+                                <button type="submit" :disabled="!records.length" 
+                                class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark rounded-0">
                                     Update
                                 </button>
-                                <button class="btn-fill-lg bg-blue-dark btn-hover-yellow rounded-0">Back</button>
+                                <button class="btn-fill-lg bg-blue-dark btn-hover-yellow rounded-0" @click.prevent="returnToPreviousPage">Back</button>
                             </form>
                         
                         </div>
@@ -137,6 +140,8 @@ export default {
             lastname: null,
             checkLoad: false,
             uploadLoad: false,
+            infoLoad: false,
+            showDate: false,
             form: {
                 session: null,
                 term: null,
@@ -155,6 +160,9 @@ export default {
         id() {
             return this.$route.params.id
         }
+    },
+    created(){
+        this.getInfo()
     },
     mounted(){
         this.getGrades(),
@@ -185,6 +193,7 @@ export default {
                         timer: 1500
                     });
                 }else{
+                    self.showDate = true;
                     self.records = data.records
                     self.firstname = data.firstname
                     self.lastname = data.lastname
@@ -238,9 +247,30 @@ export default {
             .finally(() => { self.uploadLoad = false })
         },
 
+        getInfo(){
+            this.infoLoad = true;
+            let self = this;
+            let fd = new FormData();
+            fd.append('id', this.$route.params.id)
+            Axios.post('/student-info', fd)
+            .then((res) => {
+                var data = JSON.parse(res.data);
+                if (!data.error) {
+                    self.firstname = data.student.firstname;
+                    self.lastname = data.student.lastname;
+                }
+                
+            })
+            .catch(err => console.error(err))
+            .finally(() => this.infoLoad = false )
+        },
+
         formatter(date) {
             return moment(date).format('MMMM-Do-YYYY');
         },
+        returnToPreviousPage(){
+            window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
+        },  
     }
 
 }

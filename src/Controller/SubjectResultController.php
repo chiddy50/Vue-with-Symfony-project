@@ -43,6 +43,7 @@ class SubjectResultController extends AbstractController
                 }
             }
         }
+        
         $em = $this->getDoctrine()->getManager();
         $session_entity = $em->getRepository(Session::class)->find($session);
         $term_entity = $em->getRepository(Term::class)->find($term);

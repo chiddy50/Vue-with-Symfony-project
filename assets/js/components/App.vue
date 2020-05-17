@@ -53,11 +53,5 @@ export default {
 </script>
 
 <style>
-    
-    i#spinner-md{
-    font-size: 30px;
-    }
-    #spinner-lg{
-    font-size: 100px;
-    }
+
 </style>
