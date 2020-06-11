@@ -290,7 +290,7 @@ class StudentController extends AbstractController
     }
 
     /**
-     * @Route("/live-search", name="live_search")
+     * @Route("/live-search", name="live_searches", methods="POST")
      */
     public function liveSearch(Request $request)
     {
@@ -311,7 +311,7 @@ class StudentController extends AbstractController
     }
 
     /**
-     * @Route("/generate-number", name="live_search")
+     * @Route("/generate-number", name="generate_number", methods="POST")
      */
     public function generateNumber(Request $request)
     {

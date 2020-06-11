@@ -13,14 +13,14 @@
                     
                     <form @submit.prevent="searchStudent($event)" class="new-added-form">
                         <div class="row">
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-6-xxxl col-lg-6 col-12 form-group">
                                 <label>Choose Class</label>
                                 <select v-model="form.class_id" class="form-control" name="class_id">
                                     <option aria-placeholder="Choose Class" selected disabled>Choose Class</option>
                                     <option :value="myclass.id" v-for="myclass in classes" :key="myclass.id">{{ myclass.class_name }}</option>
                                 </select>
                             </div>
-                            <div class="col-12-xxxl col-lg-6 col-12 form-group">
+                            <div class="col-6-xxxl col-lg-6 col-12 form-group">
                                 <label>Choose Section</label>
                                 <select v-model="form.section_id" class="form-control" name="section_id">
                                     <option aria-placeholder="Choose Section" selected disabled>Choose Section</option>

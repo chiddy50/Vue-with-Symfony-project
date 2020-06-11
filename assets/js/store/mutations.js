@@ -1,389 +1,116 @@
 import Axios from "axios";
 export default {
-  getClasses(state) {
-    if (!state.classes.length) {
-      state.classLoading = true;
-      Axios.post("/all-classes")
-        .then(response => {
-          let data = JSON.parse(response.data);
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.classes = data.classes;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-        .finally(() => {
-          state.classLoading = false;
-        });
-    }
+  SET_CLASSES(state, payload) {
+    state.classes = payload;
   },
-
-  fetchSubjects(state) {
-    // if(!state.subjects.length){
-    state.subjectLoading = true;
-    Axios.post("/all-subjects")
-      .then(response => {
-        let data = JSON.parse(response.data);
-        if (data.error) {
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: data.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-        } else {
-          state.subjects = data.subjects;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => {
-        state.subjectLoading = false;
-      });
-
-    // }
+  SET_SUBJECTS(state, payload) {
+    state.subjectLoading = payload;
   },
-  fetchSubjectTypes(state) {
-    if (!state.subjectTypes.length) {
-      state.subjectTypeLoading = true;
-      Axios.post("/all-subject-type")
-        .then(response => {
-          let data = JSON.parse(response.data);
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.subjectTypes = data.types;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-        .finally(() => {
-          state.subjectTypeLoading = false;
-        });
-    }
+  SET_SUBJECT_TYPES(state, payload) {
+    state.subjectTypes = payload;
   },
-  fetchSections(state) {
-    if (!state.sections.length) {
-      state.sectionLoading = true;
-      Axios.post("/all-section")
-        .then(response => {
-          let data = JSON.parse(response.data);
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.sections = data.sections;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-        .finally(() => {
-          state.sectionLoading = false;
-        });
-    }
+  SET_SECTIONS(state, payload) {
+    state.sections = payload;    
   },
-  getParents(state) {
-    if (!state.parents.length) {
-      state.parentLoading = true;
-      Axios.post("/parents")
-        .then(response => {
-          let data = JSON.parse(response.data);
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.parents = data.parents;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-        .finally(() => {
-          state.parentLoading = false;
-        });
-    }
+  SET_PARENTS(state, payload) {
+    state.parents = payload;
   },
-  getGender(state) {
-    if (!state.genders.length) {
-      Axios.post("/genders")
-        .then(response => {
-          let data = JSON.parse(response.data);
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.genders = data.genders;
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+  SET_GENDERS(state, payload) {
+    state.genders = payload;
   },
-  getExams(state) {
-    // if (!state.exams.length) {
-    Axios.post("/examinations")
-      .then(res => {
-        console.log(res);
-        console.log(JSON.parse(res.data.exams));
-        // state.exams = res.data.exams;
-      })
-      .catch(err => {
-        console.error(err);
-      });
-    // }
+  SET_EXAMS(state, payload) {
+    state.exams = payload;
   },
-  getMonths(state) {
-    if (!state.months.length) {
-      Axios.post("/months")
-        .then(response => {
-          let data = JSON.parse(response.data);
-
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.months = data.months;
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+  SET_MONTHS(state, payload) {
+    state.months = payload;
   },
-  getSessions(state) {
-    if (!state.sessions.length) {
-      Axios.post("/sessions")
-        .then(response => {
-          let data = JSON.parse(response.data);
-          if (data.error) {
-            Swal.fire({
-              position: "top-end",
-              icon: "error",
-              title: data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
-          } else {
-            state.sessions = data.sessions;
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+  SET_SESSIONS(state, payload) {
+    state.sessions = payload;
   },
-  getGroups(state) {
-    // if (!state.student_group.length) {
-    state.groupLoading = true;
-    Axios.post("/student-groups")
-      .then(response => {
-        state.groupLoading = false;
-        let data = JSON.parse(response.data);
-        if (data.error) {
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: data.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-        } else {
-          state.student_group = data.student_groups;
-        }
-      })
-      .catch(error => console.error(error))
-      .finally(() => (state.groupLoading = false));
-    // }
+  SET_STUDENT_GROUPS(state, payload) {
+    state.student_group = payload;
   },
-  getStudents(state) {
-    // if (!state.students.length) {
-    state.studentsLoading = true;
-    Axios.post("/allstudents")
-      .then(response => {
-        let data = JSON.parse(response.data);
-        if (data.error) {
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: data.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-        } else {
-          state.students = data.students;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      })
-      .finally(() => {
-        state.studentsLoading = false;
-      });
-    // }
+  SET_STUDENTS(state, payload) {
+    state.students = payload;
   },
-  getTerms(state) {
-    // if (!state.terms.length) {
-    state.termsLoading = true;
-    Axios.post("/terms")
-      .then(res => {
-        let data = JSON.parse(res.data);
-        if (data.error) {
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: data.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-        } else {
-          state.terms = data.terms;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      })
-      .finally(() => {
-        state.termsLoading = false;
-      });
-    // }
+  SET_TERMS(state, payload) {
+    state.terms = payload;
   },
-  getGrades(state) {
-    // if (!state.grades.length) {
-    state.gradesLoading = true;
-    Axios.post("/grades")
-      .then(res => {
-        state.gradesLoading = false;
-        state.grades = res.data.grades;
-      })
-      .catch(err => {
-        state.gradesLoading = false;
-        console.error(err);
-      });
-    // }
+  SET_GRADES(state, payload) {
+    state.grades = payload;
   },
-  spliceStudent: function(state, payload) {
+  SPLICE_STUDENT: function(state, payload) {
     state.students.splice(payload, 1);
   },
-  spliceClass: function(state, payload) {
+  SPLICE_CLASS: function(state, payload) {
     state.classes.splice(payload, 1);
   },
-  spliceSubject: function(state, payload) {
+  SPLICE_SUBJECT: function(state, payload) {
     state.subjects.splice(payload, 1);
   },
-  spliceSubjectType: function(state, payload) {
+  SPLICE_SUBTYPE: function(state, payload) {
     state.subjectTypes.splice(payload, 1);
   },
-  spliceSection: function(state, payload) {
+  SPLICE_SECTION: function(state, payload) {
     state.sections.splice(payload, 1);
   },
-  spliceParent: function(state, payload) {
+  SPLICE_PARENT: function(state, payload) {
     state.parents.splice(payload, 1);
   },
-  spliceStudentGroup: function(state, payload) {
+  SPLICE_STUDENT_GRP: function(state, payload) {
     state.student_group.splice(payload, 1);
   },
-  spliceTerm: function(state, payload) {
+  SPLICE_TERM: function(state, payload) {
     state.terms.splice(payload, 1);
   },
-  countAll(state) {
-    this.countLoader = true;
-    Axios.all([
-      Axios.post("/countparents"),
-      Axios.post("/countstudents"),
-      Axios.post("/gendercount")
-    ])
-      .then(res => {
-        console.log(res);
-        state.parentCount = res[0].data.count;
-        state.studentCount = res[1].data.count;
-        state.maleCount = res[2].data.male_count;
-        state.femaleCount = res[2].data.female_count;
-        this.countLoader = false;
-      })
-      .catch(err => {
-        this.countLoader = false;
-        console.error(err);
-      });
+  SET_COUNTS(state, payload) {
+    state.parentCount = payload.parentCount;
+    state.studentCount = payload.studentCount;
+    state.maleCount = payload.maleCount;
+    state.femaleCount = payload.femaleCount;
   },
 
-  searchStudent(state, payload) {
-    state.studentsLoading = true;
-    let formData = new FormData(payload.target);
-    Axios.post("/searchstudent", formData)
-      .then(response => {
-        state.studentsLoading = false;
-        let data = JSON.parse(response.data);
-        console.log(data);
-        
-        if (data.error) {
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: data.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
-        } else {
-          state.students = data.students;
-          state.data.className = data.class_name;
-          state.data.sectionName = data.section_name;
-        }
-      })
-      .catch(err => console.error(err))
-      .finally(() => (state.studentsLoading = false));
+  SET_SEARCH_RESULT(state, payload) {
+    state.students = payload.students;
+    state.data.className = payload.className;
+    state.data.sectionName = payload.sectionName;
   },
 
-  fetchGroupSubject(state) {
-    state.groupSubjectLoad = true;
-    Axios.post("/allgroupsubjects")
-      .then(res => {
-        state.groupSubjects = res.data.group_subject;
-      })
-      .catch(err => {
-        console.error(err);
-      })
-      .finally(() => {
-        state.groupSubjectLoad = false;
-      });
+  SET_GROUP_SUBJECT(state, payload) {
+    state.groupSubjects = payload;
+  },
+  MUTATE_CLASS_LOAD(state, payload){
+    state.classLoading = payload;
+  },
+  MUTATE_SUBJECT_LOAD(state, payload){
+    state.subjectLoading = payload;
+  },
+  MUTATE_SUBTYPE_LOAD(state, payload){
+    state.subjectTypeLoading = payload;
+  },
+  MUTATE_SECTION_LOAD(state, payload){
+    state.sectionLoading = payload;
+  },
+  MUTATE_PARENT_LOAD(state, payload){
+    state.parentLoading = payload;
+  },
+  MUTATE_STUDENT_GRP_LOAD(state, payload){
+    state.groupLoading = payload;
+  },
+  MUTATE_STUDENTS_LOAD(state, payload){
+    state.studentsLoading = payload;
+  },
+  MUTATE_TERM_LOADING(state, payload){
+    state.termsLoading = payload;
+  },
+  MUTATE_GRADES_LOAD(state, payload){
+    state.gradesLoading = payload;
+  },
+  MUTATE_COUNT_LOAD(state, payload){
+    state.countLoader = payload;
+  },
+  MUTATE_SUBJECT_GRP_LOAD(state, payload){
+    state.groupSubjectLoad = payload;
   }
+
 };

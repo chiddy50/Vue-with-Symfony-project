@@ -46,8 +46,6 @@ class ExamResultsController extends AbstractController
         $groups = ['groups' => ['exam_result:add']];
         $data = $dataserializer->serializeData($return, $groups);
         return new JsonResponse($data);
-
-        
     }
 
     /**
