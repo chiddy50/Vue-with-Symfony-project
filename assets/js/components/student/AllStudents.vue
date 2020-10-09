@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <div class="col-sm-12">
+        <!-- <div class="col-sm-12">
             <div class="card height-auto">
                 <div class="card-body">
                     <div class="heading-layout1">
@@ -191,7 +191,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
     </div>

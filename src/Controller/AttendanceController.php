@@ -64,6 +64,7 @@ class AttendanceController extends AbstractController
         $session = $request->request->get('session');
         $month = $request->request->get('month');
         $date = $request->request->get('date');
+        dd($attendance);
         
         $dataserializer = new DataSerializer;
        

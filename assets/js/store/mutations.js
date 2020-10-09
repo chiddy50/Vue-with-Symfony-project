@@ -3,8 +3,8 @@ export default {
   SET_CLASSES(state, payload) {
     state.classes = payload;
   },
-  SET_SUBJECTS(state, payload) {
-    state.subjectLoading = payload;
+  SET_SUBJECTS(state, payload) {    
+    state.subjects = payload;
   },
   SET_SUBJECT_TYPES(state, payload) {
     state.subjectTypes = payload;

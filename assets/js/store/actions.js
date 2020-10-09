@@ -85,6 +85,8 @@ export default {
       Axios.post("/all-subjects")
         .then(response => {
           let data = JSON.parse(response.data);
+          console.log(data);
+          
           if (data.error) {
             Swal.fire({
               position: "top-end",
@@ -138,6 +140,7 @@ export default {
       Axios.post("/student-groups")
         .then(response => {          
           let data = JSON.parse(response.data);
+          console.log(data);
           if (data.error) {
             Swal.fire({
               position: "top-end",
@@ -151,7 +154,7 @@ export default {
           }
         })
         .catch(error => console.error(error))
-        .finally(() => (commit('MUTATE_STUDENT_GRP_LOAD', false)));
+        .finally(() => ( commit('MUTATE_STUDENT_GRP_LOAD', false) ));
       // }
   },
   getStudents: function({ commit }) {

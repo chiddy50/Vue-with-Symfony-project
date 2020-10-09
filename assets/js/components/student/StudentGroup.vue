@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="row">
-            <Header :title="'Students'" :title2="'Student Group'"/>
+            <top-header :title="'Students'" :title2="'Student Group'"></top-header>
         </div>
         
         <div class="row">
             <div class="col-lg-12 col-sm-12">
                 <div class="row">
-                    <div class="col-lg-8 offset-2 col-sm-12">
+                    <div class="col-lg-8 col-sm-12">
                         <div class="card dashboard-card-eleven">
                             <div class="heading-layout1">
                                 <div class="item-title">
@@ -84,7 +84,6 @@
                     </div>
                 </div>
             </div>
-            
         </div>
         
         <!-- Add Modal Starts Here -->
@@ -166,15 +165,14 @@
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text" >
-                                                <input type="checkbox" class="subject-checkbox">
+                                                <input type="checkbox" class="subject-checkbox" :value="subject.id">
                                             </div>
                                         </div>
-                                        <input type="text" disabled class="form-control" :value="subject.subject">
+                                        <input type="text" disabled class="form-control" :placeholder="subject.subject">
                                     </div>                                
                                 </div>
                             </div> 
-                            <hr>
-                            <input type="checkbox" @click="selectAll($event)" id="defaultCheck">
+                            <input type="checkbox" @change="selectAll($event)" id="defaultCheck">
                             <label for="defaultCheck">Select All</label>    
 
                             <button class="btn btn-lg shadow-dark-peel bg-danger rounded-bottom text-light ml-4" @click="deleteSubjectGroup(subject.id)">
@@ -197,12 +195,12 @@
 <script>
 import Axios from 'axios';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import Header from '../inc/Header.vue';
+import TopHeader from '../inc/Header.vue';
 
 export default {
     name: 'StudentGroup',
     components:{
-        Header
+        TopHeader
     },
     data(){
         return{
@@ -236,7 +234,10 @@ export default {
         }
     },
     methods:{
-        ...mapActions(['getGroups', 'fetchSubjects', 'fetchGroupSubject', 'spliceStudentGroup']),
+        ...mapActions([
+            'getGroups', 'fetchSubjects', 
+            'fetchGroupSubject', 'spliceStudentGroup'
+        ]),
         creategroup(e){
             if(this.edit){
                 this.groupLoading = true;
@@ -297,7 +298,7 @@ export default {
         },
         deleteGroup(id, index, e){
             if (confirm('Are you sure?')) {
-                var target, spinner;
+                let target, spinner;
                 if (e.target.classList.contains('bg-danger')) {
                     target = e.target;
                     target.hidden = true;
@@ -342,15 +343,15 @@ export default {
             this.group_name = group.group_name
         },
         addSubjectToGroup(e){
+            let self = this;
             this.addSubjectGroupLoad = true
-            $('.success-msg').text('');
-            $('.error-msg').text('');
+
             let fd = new FormData(e.target);
             fd.append('group_id', this.group_id);
             Axios.post('/new-subject-group', fd)
             .then(res => {
-                this.addSubjectGroupLoad = false
                 let data = JSON.parse(res.data);
+                console.log(data);
                 if (data.error) {
                     Swal.fire({
                         position: 'top-end',
@@ -360,30 +361,32 @@ export default {
                         timer: 1500
                     });
                 }else{                    
-                    let existingSubjects = data.exists;
-                    let non_existingSubjects = data.non;
-                    if (existingSubjects.length) {
-                        $("div#error-msg").show(500);
-                        if (existingSubjects.length === 1) {
-                            $('.error-msg').text(`${existingSubjects.join(". ")} is being offered by this group already`);                                                    
-                        }else{
-                            $('.error-msg').text(`${existingSubjects.join(", ")} are being offered by this group already`);
-                        }
-                    }
+                    // let existingSubjects = data.exists;
+                    let non_existingSubjects = data.non.map(data => data.subject );
                     
-                    if(non_existingSubjects.length > 0){
-                        $("div#success-msg").show(500);
-                        if (non_existingSubjects.length === 1) {
-                            $('.success-msg').text(`${non_existingSubjects.join(". ")} was added`);                                                     
-                        }else{
-                            $('.success-msg').text(`${non_existingSubjects.join(", ")} were added`); 
-                        }
-                        
-                    }
-                    setTimeout(() => {
-                        $("div#success-msg").slideUp(500);                        
-                        $("div#error-msg").slideUp(500);                        
-                    }, 10000);                                    
+                    data.non.forEach(data => {
+                        self.subject_ids.push(data.id)
+                    })
+
+                    let msg = non_existingSubjects.length === 1 ? 
+                    `${non_existingSubjects.join(". ")} was added`:
+                    `${non_existingSubjects.join(", ")} were added`;
+
+                    Swal.fire({
+                        title: '<strong>SUCCESS</strong>',
+                        icon: 'success',
+                        html: `${msg}`,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                            '<i class="fa fa-thumbs-up"></i> Great!',
+                        confirmButtonAriaLabel: 'Thumbs up, great!',
+                        cancelButtonText:
+                            '<i class="fa fa-thumbs-down"></i>',
+                        cancelButtonAriaLabel: 'Thumbs down'
+                    });
+                           
                 }
                 
             })
@@ -451,6 +454,7 @@ export default {
                 let data = JSON.parse(res.data);
                 console.log(data);
                 if (data.error) {
+                    this.subject_ids = []
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
@@ -477,9 +481,7 @@ export default {
             var value = haystack.some(val => {
                return val == needle 
             });
-
             return value;
-
         }
         
     }

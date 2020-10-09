@@ -116,7 +116,7 @@ class StudentGroupController extends AbstractController
         $em->remove($group);
         $em->flush();
 
-        $return = ['error' => false, 'stduent_group' => $group];
+        $return = ['error' => false, 'student_group' => $group];
         $data = $dataserializer->serializeWithoutGroup($return);
         return new JsonResponse($data);
     }
@@ -132,17 +132,17 @@ class StudentGroupController extends AbstractController
         $dataserializer = new DataSerializer;
         $exists = [];
         $not_exist = [];
-        foreach ($subjects as $subject_name => $subject) {
-            $stmt = $repo->subjectGroupExistense($group_id, $subject);
+        foreach ($subjects as $subject_name => $subject_id) {
+            $stmt = $repo->subjectGroupExistense($group_id, $subject_id);
             // dd($stmt->fetch());
-            
+
             if($stmt->rowCount() === 1){
-                array_push($exists, $subject_name);
+                array_push($exists, ['id' => $subject_id, 'subject' => $subject_name]);
             }else{
-                array_push($not_exist, $subject_name);
+                array_push($not_exist, ['id' => $subject_id, 'subject' => $subject_name]);
 
                 $group = $this->getDoctrine()->getRepository(StudentGroup::class)->find($group_id);
-                $subject = $this->getDoctrine()->getRepository(Subjects::class)->find($subject);
+                $subject = $this->getDoctrine()->getRepository(Subjects::class)->find($subject_id);
                 $group->addSubject($subject);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($group);
@@ -172,12 +172,11 @@ class StudentGroupController extends AbstractController
 
         $dataserializer = new DataSerializer;
         if (!$subjects) {
-            $return = ['error' => true, 'message' => "No subjects"];
+            $return = ['error' => true, 'message' => "No subjects for this group"];
             $data = $dataserializer->serializeWithoutGroup($return);
             return new JsonResponse($data);
             exit();
         }
-
 
         $return = ['error' => false, 'subjects' => $subjects, 'subject_ids' => $subject_ids];
         $groups = ['groups' => ['subject:add']];
@@ -207,7 +206,5 @@ class StudentGroupController extends AbstractController
         $data = $dataserializer->serializeData($return, $groups);
         return new JsonResponse($data);
     }
-
-
 
 }
